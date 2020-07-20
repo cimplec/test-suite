@@ -1,0 +1,6 @@
+
+fun a( b)
+{
+  print("YO")
+}
+a("yolo")

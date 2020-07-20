@@ -1,0 +1,14 @@
+
+fun fan(yo){
+return "yo"
+}
+
+
+  MAIN
+  var a = 's'
+  switch(a){
+  case 's': print("SS")
+            break;
+  default : print("nono")
+  }
+  END_MAIN

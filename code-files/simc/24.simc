@@ -1,0 +1,19 @@
+
+fun fan(yo){
+return "yo"
+}
+
+  MAIN
+  var p = 2
+  if(p>2){
+  print("jo")
+  }
+  else{
+  print("yo")
+  }
+  else{
+  print("yolo")
+  }
+
+  print(p)
+  END_MAIN

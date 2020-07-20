@@ -1,0 +1,8 @@
+
+fun yo(a,b=1){
+return 1
+}
+
+MAIN
+var i = 10
+END_MAIN

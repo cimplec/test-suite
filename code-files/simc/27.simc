@@ -1,0 +1,14 @@
+
+fun fan(yo){
+return "yo"
+}
+
+
+  MAIN
+  var i = 1
+  var j =2
+  do{
+  i++
+  }
+  while(i<10)
+  END_MAIN

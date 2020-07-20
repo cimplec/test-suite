@@ -1,0 +1,8 @@
+fun sum(a, b) {
+  var c = a+b
+  return c
+}
+
+MAIN
+var d = sum(1,2)
+END_MAIN

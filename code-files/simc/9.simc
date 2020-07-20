@@ -1,0 +1,9 @@
+
+MAIN
+  var a = 10
+  while(print("yolo")){
+  a = a-1
+  print("yolo")
+}
+
+END_MAIN

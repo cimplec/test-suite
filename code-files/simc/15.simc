@@ -1,8 +1,0 @@
-fun sum(a, b) {
-  return a + sum(a,b)
-
-}
-
-MAIN
-
-END_MAIN

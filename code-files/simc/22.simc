@@ -1,8 +1,0 @@
-
-fun fan(yo){
-return "yo"
-}
-
-  MAIN
-  var ptr = fan("yo")
-  END_MAIN

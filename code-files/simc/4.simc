@@ -1,7 +1,0 @@
-
-var i = "asb"
-MAIN
-  var i = 10
-  var j = 10
-  print(i)
-END_MAIN

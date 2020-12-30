@@ -1,4 +1,0 @@
-MAIN
-  var i = 0
-  (i++)++
-END_MAIN

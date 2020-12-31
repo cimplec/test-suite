@@ -48,7 +48,26 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def test_update_filename(self):
         self.__setup(source_code="")
 
+        # Update filename
         test_source_filename = "test.simc"
         self.lexical_analyzer.update_filename(source_filename=test_source_filename)
 
         self.assertEqual(self.lexical_analyzer.source_filename, test_source_filename)
+
+    def test___update_source_index(self):
+        self.__setup(source_code="print('Hello')")
+
+        # Set initial index
+        self.lexical_analyzer.current_source_index = 0
+
+        # Default parameter (by=1)
+        self.lexical_analyzer._LexicalAnalyzer__update_source_index()
+        self.assertEqual(self.lexical_analyzer.current_source_index, 1)
+
+        # Positive by (=11)
+        self.lexical_analyzer._LexicalAnalyzer__update_source_index(by=10)
+        self.assertEqual(self.lexical_analyzer.current_source_index, 11)
+
+        # Negative by (=-5)
+        self.lexical_analyzer._LexicalAnalyzer__update_source_index(by=-5)
+        self.assertEqual(self.lexical_analyzer.current_source_index, 6)

@@ -39,11 +39,11 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "simc-test = simc_test.main:unit_test",
+            "simc-test = simc_test.test_suite:run_tests",
         ]
     },
     package_data={"simc": ["package-index"]},
-    install_requires=["requests"],
+    install_requires=["tqdm"],
     classifiers=[
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python :: 3",

@@ -1,14 +1,26 @@
 import unittest
 import os
+import io
+import sys
 
 from simc.lexical_analyzer import LexicalAnalyzer
 from simc.symbol_table import SymbolTable
+from simc.token_class import Token
 
 class TestLexicalAnalyzer(unittest.TestCase):
 
     ####################################################################################################
     # HELPERS
     ####################################################################################################
+    def __suppress_print(self):
+        # Suppress print
+        suppress_text = io.StringIO()
+        sys.stdout = suppress_text 
+
+    def __release_print(self):
+        # Release print
+        sys.stdout = sys.__stdout__
+
     def __write_to_file(self, filename, string):
         with open(filename, "w") as file:
             file.write(string)
@@ -20,6 +32,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         self.symbol_table = SymbolTable()
         self.lexical_analyzer = LexicalAnalyzer(source_filename=self.source_filename, symbol_table=self.symbol_table)
+
+        # Set initial index
+        self.lexical_analyzer.current_source_index = 0
+        self.lexical_analyzer.line_num = 0
 
     ####################################################################################################
     # TESTS
@@ -57,9 +73,6 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def test___update_source_index(self):
         self.__setup(source_code="print('Hello')")
 
-        # Set initial index
-        self.lexical_analyzer.current_source_index = 0
-
         # Default parameter (by=1)
         self.lexical_analyzer._LexicalAnalyzer__update_source_index()
         self.assertEqual(self.lexical_analyzer.current_source_index, 1)
@@ -71,3 +84,84 @@ class TestLexicalAnalyzer(unittest.TestCase):
         # Negative by (=-5)
         self.lexical_analyzer._LexicalAnalyzer__update_source_index(by=-5)
         self.assertEqual(self.lexical_analyzer.current_source_index, 6)
+
+    def test___check_next_token(self):
+        self.__setup(source_code="1+2")
+
+        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.tokens = []
+
+        # True case - Match first character in list
+        self.lexical_analyzer.current_source_index = 0
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(['+'], ["plus"], "minus")
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("plus", "", self.lexical_analyzer.line_num))
+
+        # True case - Match after first character in list
+        self.lexical_analyzer.current_source_index = 0
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(['/', '+'], ["divide", "plus"], "minus")
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("plus", "", self.lexical_analyzer.line_num))
+
+        # False case 
+        self.lexical_analyzer.current_source_index = 0
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(["/"], ["divide"], "minus")
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("minus", "", self.lexical_analyzer.line_num))
+
+    def test___is_keyword(self):
+        self.__setup(source_code="")
+
+        # True cases
+        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("print"), True)
+        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("true"), True)
+
+        # False cases
+        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("1"), False)
+        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("id"), False)
+
+    def test___numeric_val(self):
+        self.__setup(source_code="")
+
+        # Integer numeric constant
+        self.lexical_analyzer.source_code = "314\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__numeric_val()
+
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['314', 'int', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Float numeric constant
+        self.lexical_analyzer.source_code = "3.14\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__numeric_val()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['3.14', 'float', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Double numeric constant
+        self.lexical_analyzer.source_code = "3.14159265\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__numeric_val()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['3.14159265', 'double', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
+
+        self.__setup(source_code="")
+        self.__suppress_print()
+
+        # Multiple decimal points error
+        self.lexical_analyzer.source_code = "3.14.159\0"
+        self.lexical_analyzer.tokens = []
+
+        with self.assertRaises(SystemExit):
+            self.lexical_analyzer._LexicalAnalyzer__numeric_val()
+
+        self.__release_print()
+
+    def test___string_val(self):
+        self.__setup(source_code="")
+
+    

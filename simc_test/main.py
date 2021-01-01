@@ -5,7 +5,7 @@ import subprocess
 from .test_global_helpers import TestGlobalHelpers
 from .test_lexical_analyzer import TestLexicalAnalyzer
 
-def run():
+def unittest():
     # List of test classes to run
     test_classes_to_run = [
         TestGlobalHelpers,

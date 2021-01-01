@@ -39,7 +39,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "simc-test = simc_test.main:unittest",
+            "simc-test = simc_test.main:unit_test",
         ]
     },
     package_data={"simc": ["package-index"]},

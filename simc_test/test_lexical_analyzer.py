@@ -164,4 +164,104 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def test___string_val(self):
         self.__setup(source_code="")
 
-    
+        # String constant with "
+        self.lexical_analyzer.source_code = '"hello world"\0'
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__string_val()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['"hello world"', 'string', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
+
+        self.__setup(source_code="")
+
+        # String constant with '
+        self.lexical_analyzer.source_code = "'hello world'\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['"hello world"', 'string', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Char constant with "
+        self.lexical_analyzer.source_code = '"h"\0'
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__string_val()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["'h'", 'char', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Char constant with '
+        self.lexical_analyzer.source_code = "'h'\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["'h'", 'char', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
+
+        self.__setup(source_code="")
+        self.__suppress_print()
+
+        # Unterminated string
+        self.lexical_analyzer.source_code = '"he\0'
+        self.lexical_analyzer.tokens = []
+
+        with self.assertRaises(SystemExit):
+            self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
+
+        self.__release_print()
+
+    def test___keyword_identifier(self):
+        self.__setup(source_code="")
+
+        # Bool constant
+        self.lexical_analyzer.source_code = "true\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["true", 'bool', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("bool", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Math constant
+        self.lexical_analyzer.source_code = "PI\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["PI", 'double', 'constant'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
+
+        self.__setup(source_code="")
+
+        # Keyword
+        self.lexical_analyzer.source_code = "print\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("print", "", 0))
+
+        self.__setup(source_code="")
+
+        # Identifier
+        self.lexical_analyzer.source_code = "variable\0"
+        self.lexical_analyzer.tokens = []
+
+        self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
+        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["variable", 'var', 'variable'])
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("id", 1, 0))
+
+        self.__setup(source_code="")
+        self.__suppress_print()
+
+        # C Keyword as identifier - Error
+        self.lexical_analyzer.source_code = "const\0"
+        self.lexical_analyzer.tokens = []
+
+        with self.assertRaises(SystemExit):
+            self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
+
+        self.__release_print()

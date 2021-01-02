@@ -1,0 +1,2 @@
+class NotATokenError(Exception):
+    pass

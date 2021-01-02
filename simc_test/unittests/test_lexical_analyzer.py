@@ -7,6 +7,8 @@ from simc.lexical_analyzer import LexicalAnalyzer
 from simc.symbol_table import SymbolTable
 from simc.token_class import Token
 
+from .exceptions import NotATokenError
+
 class TestLexicalAnalyzer(unittest.TestCase):
 
     ####################################################################################################
@@ -24,6 +26,24 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def __write_to_file(self, filename, string):
         with open(filename, "w") as file:
             file.write(string)
+
+    def __assertListEquality(self, sources, matches):
+        for source, match in zip(sources, matches):
+            self.assertEqual(source, match)
+
+    def __print_tokens(self, tokens):
+        for token in tokens:
+            if isinstance(token, Token):
+                print(token)
+            else:
+                raise NotATokenError
+
+    def __match_single_token(self, source_code, token_type):
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__assertListEquality(tokens, [Token(token_type, '', 1)])
 
     def __setup(self, source_code):
         self.source_filename = "lexical-analysis-test.simc"
@@ -316,8 +336,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
                            Token('RAW_C', '            int a = 10;', 2), 
                            Token('RAW_C', '            printf("%d", a);', 3)]
 
-        for token, token_to_match in zip(self.lexical_analyzer.tokens, tokens_to_match):
-            self.assertEqual(token, token_to_match)
+        self.__assertListEquality(self.lexical_analyzer.tokens, tokens_to_match)
 
     def test___get_raw_tokens_empty_raw_c_code(self):
         raw_c_source_code = """
@@ -332,8 +351,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens_to_match = [Token('RAW_C', '', 0), Token('RAW_C', '        BEGIN_C', 1)]
 
-        for token, token_to_match in zip(self.lexical_analyzer.tokens, tokens_to_match):
-            self.assertEqual(token, token_to_match)
+        self.__assertListEquality(self.lexical_analyzer.tokens, tokens_to_match)
 
     def test___get_raw_tokens_error_no_end_c(self):
         raw_c_source_code = """
@@ -351,4 +369,238 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         self.__release_print()
 
-    
+    def test_lexical_analyze_raw_c(self):
+        source_code = """
+        BEGIN_C
+            printf("Hello World");
+        END_C
+        """
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('newline', '', 1), Token('BEGIN_C', '', 2), Token('RAW_C', '', 2),
+                           Token('RAW_C', '            printf("Hello World");', 3)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_numeric_val(self):
+        source_code = "3.14"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('number', 1, 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_string_val_double_quotes(self):
+        source_code = '"hello"'
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('string', 1, 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_string_val_single_quotes(self):
+        source_code = "'hello'"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('string', 1, 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_keyword_identifier(self):
+        source_code = "var a"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('var', '', 1), Token('id', 1, 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_parens(self):
+        source_code = "()"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('left_paren', '', 1), Token('right_paren', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_too_many_closing_parantheses(self):
+        source_code = "())"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_unbalanced_parantheses(self):
+        source_code = "([)]"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_call_end_token(self):
+        source_code = "()\n"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('left_paren', '', 1), Token('right_paren', '', 1), Token('call_end', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_newline(self):
+        source_code = "\n"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('newline', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+
+    def test_lexical_analyze_newline_parantheses_not_matching(self):
+        source_code = "(\n"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_braces(self):
+        source_code = "{}"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('left_brace', '', 1), Token('right_brace', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_too_many_closing_braces(self):
+        source_code = "{}}"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_unbalanced_braces(self):
+        source_code = "{(})"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_brackets(self):
+        source_code = "[]"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('left_bracket', '', 1), Token('right_bracket', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_too_many_closing_brackets(self):
+        source_code = "[]]"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_unbalanced_brackets(self):
+        source_code = "[{]}"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_equal(self):
+        self.__match_single_token("==", "equal")
+
+    def test_lexical_analyze_assignment(self):
+        self.__match_single_token("=", "assignment")
+
+    def test_lexical_analyze_plus_equal(self):
+        self.__match_single_token("+=", "plus_equal")
+
+    def test_lexical_analyze_increment(self):
+        self.__match_single_token("++", "increment")
+
+    def test_lexical_analyze_plus(self):
+        self.__match_single_token("+", "plus")
+
+    def test_lexical_analyze_minus_equal(self):
+        self.__match_single_token("-=", "minus_equal")
+
+    def test_lexical_analyze_decrement(self):
+        self.__match_single_token("--", "decrement")
+
+    def test_lexical_analyze_minus(self):
+        self.__match_single_token("-", "minus")
+
+    def test_lexical_analyze_multiply_equal(self):
+        self.__match_single_token("*=", "multiply_equal")
+
+    def test_lexical_analyze_power(self):
+        self.__match_single_token("**", "power")
+
+    def test_lexical_analyze_multiply(self):
+        self.__match_single_token("*", "multiply")
+
+    def test_lexical_analyze_bitwise_xor_equal(self):
+        self.__match_single_token("^=", "bitwise_xor_equal")
+
+    def test_lexical_analyze_bitwise_xor(self):
+        self.__match_single_token("^", "bitwise_xor")
+
+    def test_lexical_analyze_and(self):
+        self.__match_single_token("&&", "and")
+
+    def test_lexical_analyze_bitwise_and_equal(self):
+        source_code = "var a &= 1"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__print_tokens(tokens)
+        # tokens_to_match = [Token('left_brace', '', 1), Token('right_brace', '', 1)]
+
+        # self.__assertListEquality(tokens, tokens_to_match)

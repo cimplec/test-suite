@@ -298,3 +298,57 @@ class TestLexicalAnalyzer(unittest.TestCase):
             self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
 
         self.__release_print()
+
+    def test___get_raw_tokens_with_raw_c_code(self):
+        raw_c_source_code = """
+        BEGIN_C
+            int a = 10;
+            printf("%d", a);
+        END_C
+        """
+        self.__setup(source_code=raw_c_source_code)
+
+        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.tokens = []
+        self.lexical_analyzer._LexicalAnalyzer__get_raw_tokens()
+
+        tokens_to_match = [Token('RAW_C', '', 0), Token('RAW_C', '        BEGIN_C', 1),
+                           Token('RAW_C', '            int a = 10;', 2), 
+                           Token('RAW_C', '            printf("%d", a);', 3)]
+
+        for token, token_to_match in zip(self.lexical_analyzer.tokens, tokens_to_match):
+            self.assertEqual(token, token_to_match)
+
+    def test___get_raw_tokens_empty_raw_c_code(self):
+        raw_c_source_code = """
+        BEGIN_C
+        END_C
+        """
+        self.__setup(source_code=raw_c_source_code)
+
+        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.tokens = []
+        self.lexical_analyzer._LexicalAnalyzer__get_raw_tokens()
+
+        tokens_to_match = [Token('RAW_C', '', 0), Token('RAW_C', '        BEGIN_C', 1)]
+
+        for token, token_to_match in zip(self.lexical_analyzer.tokens, tokens_to_match):
+            self.assertEqual(token, token_to_match)
+
+    def test___get_raw_tokens_error_no_end_c(self):
+        raw_c_source_code = """
+        BEGIN_C
+        """
+        self.__setup(source_code=raw_c_source_code)
+
+        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.tokens = []
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            self.lexical_analyzer._LexicalAnalyzer__get_raw_tokens()
+
+        self.__release_print()
+
+    

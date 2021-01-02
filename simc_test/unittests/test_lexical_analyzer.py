@@ -595,12 +595,140 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.__match_single_token("&&", "and")
 
     def test_lexical_analyze_bitwise_and_equal(self):
-        source_code = "var a &= 1"
+        source_code = """
+        var a
+        a &= 1
+        """
         self.__setup(source_code=source_code)
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        self.__print_tokens(tokens)
-        # tokens_to_match = [Token('left_brace', '', 1), Token('right_brace', '', 1)]
+        tokens_to_match = [Token('newline', '', 1), Token('var', '', 2), Token('id', 1, 2),
+                           Token('newline', '', 2), Token('id', 1, 3), Token('bitwise_and_equal', '', 3),
+                           Token('number', 2, 3), Token('newline', '', 3)]
 
-        # self.__assertListEquality(tokens, tokens_to_match)
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_bitwise_and(self):
+        source_code = "var a = 1 & 2"
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('var', '', 1), Token('id', 1, 1),  Token('assignment', '', 1), 
+                           Token('number', 2, 1), Token('bitwise_and', '', 1),
+                           Token('number', 3, 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_address_of(self):
+        self.__match_single_token("&", "address_of")
+
+    def test_lexical_analyze_or(self):
+        self.__match_single_token("||", "or")
+
+    def test_lexical_analyze_bitwise_or_equal(self):
+        self.__match_single_token("|=", "bitwise_or_equal")
+
+    def test_lexical_analyze_bitwise_or(self):
+        self.__match_single_token("|", "bitwise_or")
+
+    def test_lexical_analyze_divide_equal(self):
+        self.__match_single_token("/=", "divide_equal")
+
+    def test_lexical_analyze_single_line_comment(self):
+        source_code = """// This is a comment
+        """
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+  
+        tokens_to_match = [Token('single_line_comment', ' This is a comment', 1),
+                           Token('newline', '', 1)]
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_multi_line_comment(self):
+        source_code = """/*
+        This is a multi-line comment
+        */
+        """
+        self.__setup(source_code=source_code)
+
+        tokens, _ = self.lexical_analyzer.lexical_analyze()
+
+        tokens_to_match = [Token('multi_line_comment', '''
+        This is a multi-line comment
+        ''', 3), Token('newline', '', 3)]
+
+
+        self.__assertListEquality(tokens, tokens_to_match)
+
+    def test_lexical_analyze_divide(self):
+        self.__match_single_token("/", "divide")
+
+    def test_lexical_analyze_modulus_equal(self):
+        self.__match_single_token("%=", "modulus_equal")
+
+    def test_lexical_analyze_modulus(self):
+        self.__match_single_token("%", "modulus")
+
+    def test_lexical_analyze_comma(self):
+        self.__match_single_token(",", "comma")
+
+    def test_lexical_analyze_not_equal(self):
+        self.__match_single_token("!=", "not_equal")
+
+    def test_lexical_analyze_right_shift(self):
+        self.__match_single_token(">>", "right_shift")
+
+    def test_lexical_analyze_greater_than_equal(self):
+        self.__match_single_token(">=", "greater_than_equal")
+
+    def test_lexical_analyze_greater_than(self):
+        self.__match_single_token(">", "greater_than")
+
+    def test_lexical_analyze_left_shift(self):
+        self.__match_single_token("<<", "left_shift")
+
+    def test_lexical_analyze_less_than_equal(self):
+        self.__match_single_token("<=", "less_than_equal")
+
+    def test_lexical_analyze_less_than(self):
+        self.__match_single_token("<", "less_than")
+
+    def test_lexical_analyze_colon(self):
+        self.__match_single_token(":", "colon")
+
+    def test_lexical_analyze_unbalanced_parantheses_end(self):
+        source_code = "(()"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_unbalanced_braces_end(self):
+        source_code = "{{}"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()
+
+    def test_lexical_analyze_unbalanced_brackets_end(self):
+        source_code = "[[]"
+        self.__setup(source_code=source_code)
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _ = self.lexical_analyzer.lexical_analyze()
+
+        self.__release_print()

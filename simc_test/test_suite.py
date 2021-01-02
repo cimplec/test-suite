@@ -23,4 +23,7 @@ def run_tests():
     else:
         for arg, should_run in args.items():
             if should_run:
+                print("*" * 50)
+                print(f"Running {arg} test")
+                print("*" * 50)
                 args_with_func[arg]()

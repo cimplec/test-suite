@@ -21,15 +21,13 @@ def run_simc_codes():
     correct = 0
     wrong = {}
 
-    for i, file in enumerate(files):
-        filename_c = "".join(os.path.basename(file).split(".")[:-1]) + ".c"
-        output = subprocess.getoutput(f"simc {file}")
+    for i in tqdm(range(len(files))):
+        filename_c = "".join(os.path.basename(files[i]).split(".")[:-1]) + ".c"
+        output = subprocess.getoutput(f"simc {files[i]}")
         if "C code generated at" in output:
             correct += 1
         else:
             wrong[file] = output
-
-        print(str(i+1) + "/" + str(len(files)))
 
     print(f"\033[92m[{correct}/{len(files)}] tests passed!")
     print(f"\033[91m[{len(wrong)}/{len(files)}] tests failed!\n")

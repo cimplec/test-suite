@@ -1,5 +1,4 @@
 import unittest
-import os
 
 from simc.op_code import OpCode
 

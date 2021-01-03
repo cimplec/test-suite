@@ -5,6 +5,7 @@ import subprocess
 from .test_global_helpers import TestGlobalHelpers
 from .test_lexical_analyzer import TestLexicalAnalyzer
 from .test_op_code import TestOpCode
+from .test_symbol_table import TestSymbolTable
 
 def unit_test():
     # List of test classes to run
@@ -12,6 +13,7 @@ def unit_test():
         TestGlobalHelpers,
         TestLexicalAnalyzer,
         TestOpCode,
+        TestSymbolTable,
     ]
 
     loader = unittest.TestLoader()

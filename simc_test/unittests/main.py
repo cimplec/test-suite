@@ -6,6 +6,7 @@ from .test_global_helpers import TestGlobalHelpers
 from .test_lexical_analyzer import TestLexicalAnalyzer
 from .test_op_code import TestOpCode
 from .test_symbol_table import TestSymbolTable
+from .test_token_class import TestTokenClass
 
 def unit_test():
     # List of test classes to run
@@ -14,6 +15,7 @@ def unit_test():
         TestLexicalAnalyzer,
         TestOpCode,
         TestSymbolTable,
+        TestTokenClass,
     ]
 
     loader = unittest.TestLoader()

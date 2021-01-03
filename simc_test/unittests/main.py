@@ -4,12 +4,14 @@ import subprocess
 
 from .test_global_helpers import TestGlobalHelpers
 from .test_lexical_analyzer import TestLexicalAnalyzer
+from .test_op_code import TestOpCode
 
 def unit_test():
     # List of test classes to run
     test_classes_to_run = [
         TestGlobalHelpers,
-        TestLexicalAnalyzer
+        TestLexicalAnalyzer,
+        TestOpCode,
     ]
 
     loader = unittest.TestLoader()

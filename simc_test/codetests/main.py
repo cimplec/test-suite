@@ -8,9 +8,13 @@ def get_simc_codes():
     remove_simc_repo()
     _ = subprocess.getoutput("git clone https://github.com/cimplec/sim-c")
 
+def del_rw(action, name, exc):
+    os.chmod(name, stat.S_IWRITE)
+    os.remove(name)
+
 def remove_simc_repo():
     if os.path.exists("sim-c"):
-        shutil.rmtree("sim-c")
+        shutil.rmtree("sim-c", onerror=del_rw)
 
 def run_simc_codes():
     get_simc_codes()

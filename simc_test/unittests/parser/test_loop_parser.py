@@ -91,7 +91,7 @@ class TestLoopParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list, table=table)
 
-    def test_for_statement_missing_no_errors(self):
+    def test_for_statement_no_errors(self):
         tokens_list = [Token("for", "", 1), Token("id", 1, 1), Token("in", "", 1),
                        Token('number', 2, 1), Token("to", "", 1), Token("number", 3, 1),
                        Token("by", "", 1), Token("plus", "", 1), Token("number", 4, 1)]
@@ -104,4 +104,51 @@ class TestLoopParser(unittest.TestCase):
         opcode, _, _ = for_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
 
         self.assertEqual(opcode, OpCode('for', 'a&&&1&&&10&&&+&&&<&&&2', None))
-    
+
+    def test_while_statement_missing_left_paren(self):
+        tokens_list = [Token("while", "", 1), Token("id", 1, 1)]
+        
+        table = SymbolTable()  
+            
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = while_statement(tokens=tokens_list, i=1, table=table, in_do=False, func_ret_type={})
+
+        self.__release_print()
+
+    def test_while_statement_missing_right_paren(self):
+        tokens_list = [Token("while", "", 1), Token("left_paren", "", 1), Token("id", 1, 1),
+                       Token("print", "", 1)]
+        
+        table = SymbolTable()  
+        table.entry("true", "bool", "variable")
+            
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = while_statement(tokens=tokens_list, i=1, table=table, in_do=False, func_ret_type={})
+
+        self.__release_print()
+
+    def test_while_statement_no_error(self):
+        tokens_list = [Token("while", "", 1), Token("left_paren", "", 1), Token("id", 1, 1),
+                       Token("right_paren", "", 1), Token("newline", "", 1), Token("print", "", 2)]
+        
+        table = SymbolTable()  
+        table.entry("true", "bool", "variable")
+            
+        opcode, _, _ = while_statement(tokens=tokens_list, i=1, table=table, in_do=False, func_ret_type={})
+
+        self.assertEqual(opcode, OpCode('while', 'true', None))
+
+    def test_while_statement_no_error_do_while(self):
+        tokens_list = [Token("while", "", 1), Token("left_paren", "", 1), Token("id", 1, 1),
+                       Token("right_paren", "", 1), Token("newline", "", 1), Token("print", "", 2)]
+        
+        table = SymbolTable()  
+        table.entry("true", "bool", "variable")
+            
+        opcode, _, _ = while_statement(tokens=tokens_list, i=1, table=table, in_do=True, func_ret_type={})
+        
+        self.assertEqual(opcode, OpCode('while_do', 'true', None))

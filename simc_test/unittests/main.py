@@ -39,3 +39,4 @@ def unit_test():
 
     # Remove any simc scripts created for testing
     _ = subprocess.getoutput("rm *.simc")
+    _ = subprocess.getoutput("rm *.c")

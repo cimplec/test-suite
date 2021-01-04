@@ -46,7 +46,7 @@ class TestConditionalParser(unittest.TestCase):
 
         self.__release_print()
 
-    def test_if_statement_missing_right_paren(self):
+    def test_if_statement_no_error(self):
         tokens_list = [Token("if", "", 1), Token("left_paren", "", 1), Token("number", 1, 1),
                        Token("right_paren", "", 1), Token("call_end", "", 1), Token("newline", "", 1),
                        Token("print", "", 1)]
@@ -57,4 +57,48 @@ class TestConditionalParser(unittest.TestCase):
 
         self.assertEqual(opcode, OpCode("if", "true"))
 
-    
+    def test_switch_statement_missing_left_paren(self):
+        tokens_list = [Token("switch", "", 1), Token("left_brace", "", 1)]
+        table = SymbolTable()
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = switch_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_switch_statement_missing_right_paren(self):
+        tokens_list = [Token("switch", "", 1), Token("left_paren", "", 1), Token("print", "", 1)]
+        table = SymbolTable()
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = switch_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_switch_statement_missing_left_brace(self):
+        tokens_list = [Token("switch", "", 1), Token("left_paren", "", 1), Token("number", 1, 1),
+                       Token("right_paren", "", 1), Token("call_end", "", 1), Token("newline", "", 1),
+                       Token("print", "", 1)]
+        table = SymbolTable()
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = switch_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_switch_statement_no_error(self):
+        tokens_list = [Token("switch", "", 1), Token("left_paren", "", 1), Token("number", 1, 1),
+                       Token("right_paren", "", 1), Token("call_end", "", 1), Token("newline", "", 1),
+                       Token("left_brace", "", 1), Token("print", "", 1)]
+        table = SymbolTable()
+        table.entry("true", "bool", "variable")
+
+        opcode, _, _ = switch_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.assertEqual(opcode, OpCode("switch", "true", ""))

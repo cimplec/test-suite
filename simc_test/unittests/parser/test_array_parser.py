@@ -46,7 +46,7 @@ class TestArrayParser(unittest.TestCase):
         
         self.__test_error_case(tokens_list)
 
-    def test_array_initializer_missing_missing_comma_separator(self):
+    def test_array_initializer_missing_comma_separator(self):
         tokens_list = [Token("assignment", "", 1), Token("left_brace", "", 1), Token('number', 3, 1), 
                        Token('number', 4, 1), Token('comma', '', 1),
                        Token('number', 5, 1), Token("right_brace", "", 1)]

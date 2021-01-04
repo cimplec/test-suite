@@ -102,3 +102,26 @@ class TestConditionalParser(unittest.TestCase):
         opcode, _, _ = switch_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
 
         self.assertEqual(opcode, OpCode("switch", "true", ""))
+
+    def test_case_statement_missing_colon(self):
+        tokens_list = [Token("case", "", 1), Token("number", "", 1), Token("print", "", 1)]
+        table = SymbolTable()
+        table.entry("1", "int", "variable")
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _, _, _ = case_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_case_statement_no_error(self):
+        tokens_list = [Token("case", "", 1), Token("number", 1, 1), Token("colon", "", 1),
+                       Token("newline", "", 1),
+                       Token("left_brace", "", 1), Token("print", "", 1)]
+        table = SymbolTable()
+        table.entry("1", "bool", "variable")
+
+        opcode, _, _ = case_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.assertEqual(opcode, OpCode("case", "1", ""))

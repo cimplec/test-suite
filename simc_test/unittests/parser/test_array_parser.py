@@ -71,12 +71,6 @@ class TestArrayParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list, table)
 
-    def test_array_initializer_missing_no_ending_right_brace(self):
-        tokens_list = [Token("assignment", "", 1), Token("left_brace", "", 1), Token('number', 1, 1), 
-                       Token('comma', '', 1), Token('number', 2, 1)]
-
-        self.__test_error_case(tokens_list)
-
     def test_array_initializer_missing_no_errors(self):
         tokens_list = [Token("assignment", "", 1), Token("left_brace", "", 1), Token('number', 1, 1), 
                        Token('comma', '', 1), Token('number', 2, 1), Token("right_brace", "", 1)]

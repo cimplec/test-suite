@@ -27,7 +27,7 @@ def run_simc_codes():
         if "C code generated at" in output:
             correct += 1
         else:
-            wrong[file] = output
+            wrong[files[i]] = output
 
     print(f"\033[92m[{correct}/{len(files)}] tests passed!")
     print(f"\033[91m[{len(wrong)}/{len(files)}] tests failed!\n")

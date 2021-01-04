@@ -20,12 +20,11 @@ class TestArrayParser(unittest.TestCase):
         # Release print
         sys.stdout = sys.__stdout__
 
-    def __test_error_case(self, tokens_list, table=None, no_suppression=True):
+    def __test_error_case(self, tokens_list, table=None):
         if table == None:
-            table = SymbolTable()
-
-        if no_suppression:
-            self.__suppress_print()
+            table = SymbolTable()  
+            
+        self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _, _, _ = array_initializer(tokens=tokens_list, i=1, table=table, size_of_array=2, msg="Test message")

@@ -9,6 +9,7 @@ from .test_symbol_table import TestSymbolTable
 from .test_token_class import TestTokenClass
 from .test_simc import TestSimc
 from .parser.test_array_parser import TestArrayParser
+from .parser.test_conditional_parser import TestConditionalParser
 
 def unit_test():
     # List of test classes to run
@@ -20,6 +21,7 @@ def unit_test():
         TestTokenClass,
         TestSimc,
         TestArrayParser,
+        TestConditionalParser,
     ]
 
     loader = unittest.TestLoader()

@@ -95,3 +95,35 @@ class TestSimcParser(unittest.TestCase):
         opcodes = parse(tokens=tokens_list, table=table)
        
         self.assertEqual(opcodes[1], OpCode('unary', 'a -- ', None))
+
+    def test_exit_statement_expected_left_paren_error(self):
+        tokens_list = [Token('exit', '', 1), Token('print', '', 1)]
+        table = SymbolTable()
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = exit_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_exit_statement_expected_number_error(self):
+        tokens_list = [Token('exit', '', 1), Token('left_paren', '', 1), Token('print', '', 1)]
+        table = SymbolTable()
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = exit_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_exit_no_error(self):
+        tokens_list = [Token('exit', '', 1), Token('left_paren', '', 1), Token('number', 1, 1),
+                       Token('right_paren', '', 1)]
+        table = SymbolTable()
+        table.entry("0", "int", "constant")
+
+        opcode, _, _ = exit_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+        
+        self.assertEqual(opcode, OpCode('exit', '0', None))

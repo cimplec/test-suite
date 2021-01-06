@@ -135,3 +135,29 @@ class TestVariableParser(unittest.TestCase):
         opcodes = parse(tokens_list, table)
         
         self.assertEqual(opcodes[0], OpCode('ptr_no_assign', 'b', None))
+
+    def test_assign_statement_ptr_only_assign_no_error(self):
+        tokens_list = [Token('var', '', 1) , Token('id', 1, 1), Token('assignment', '', 1),
+                       Token('number', 2, 1), Token('newline', '', 1), Token('var', '', 2),
+                       Token('multiply', '', 2), Token('id', 3, 2), Token('assignment', '', 2),
+                       Token('bitwise_and', '', 2), Token('id', 1, 2), Token('newline', '', 2),
+                       Token('multiply', '', 3), Token('id', 3, 3), Token('assignment', '', 3),
+                       Token('number', 4, 3), Token('newline', '', 3)]
+        table = SymbolTable()
+        table.symbol_table = {1: ['b', 'var', 'variable'], 2: ['1', 'int', 'constant'], 
+                              3: ['a', 'var', 'variable'], 4: ['1', 'int', 'constant']}
+
+        opcodes = parse(tokens_list, table)
+        
+        self.assertEqual(opcodes[2], OpCode('ptr_only_assign', 'a---=---1---1', ''))
+
+    def test_assign_statement_assign_no_error(self):
+        tokens_list = [Token('var', '', 1), Token('id', 1, 1), Token('newline', '', 1), 
+                       Token('id', 1, 2), Token('assignment', '', 2), Token('number', 2, 2),
+                       Token('newline', '', 2)]
+        table = SymbolTable()
+        table.symbol_table = {1: ['b', 'var', 'variable'], 2: ['1', 'int', 'constant']}
+
+        opcodes = parse(tokens_list, table)
+        
+        self.assertEqual(opcodes[1], OpCode('assign', 'b---=---1', ''))

@@ -137,17 +137,6 @@ class TestCompiler(unittest.TestCase):
         
         self.assertEqual(c_source_code, c_compiled_code)
 
-    def test_compile_ptr_no_assign_statement(self):
-        source_code = """
-        var *a
-        """
-
-        c_source_code = '\n\tdeclared *a;\n'
-
-        c_compiled_code = self.__compile(source_code)
-        
-        self.assertEqual(c_source_code, c_compiled_code)
-
     def test_compile_array_no_assign_statement(self):
         source_code = """
         var a[2]
@@ -169,3 +158,16 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_ptr_no_assign_statement(self):
+        source_code = """
+        var *a
+        """
+
+        c_source_code = '\n\tdeclared *a;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    

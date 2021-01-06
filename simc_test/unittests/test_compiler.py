@@ -362,3 +362,23 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_switch_case_default_statements(self):
+        source_code = """
+        switch(1) {
+            case 1: {
+                print("Hello")
+                break
+            }
+            default: {
+                print("World")
+                break
+            }
+        }
+        """
+
+        c_source_code = '#include <stdio.h>\n\tswitch(1) {\n\tcase 1:\n{\n\tprintf("Hello");\n\tbreak;\n}\n\tdefault:\n{\n\tprintf("World");\n\tbreak;\n}\n}\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

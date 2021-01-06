@@ -5,6 +5,7 @@ import io
 
 from simc.global_helpers import *
 
+
 class TestGlobalHelpers(unittest.TestCase):
 
     ####################################################################################################
@@ -14,7 +15,7 @@ class TestGlobalHelpers(unittest.TestCase):
     def __suppress_print(self):
         # Suppress print
         suppress_text = io.StringIO()
-        sys.stdout = suppress_text 
+        sys.stdout = suppress_text
 
     def __release_print(self):
         # Release print

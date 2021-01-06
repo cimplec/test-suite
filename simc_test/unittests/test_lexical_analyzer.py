@@ -9,6 +9,7 @@ from simc.token_class import Token
 
 from .exceptions import NotATokenError
 
+
 class TestLexicalAnalyzer(unittest.TestCase):
 
     ####################################################################################################
@@ -17,7 +18,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def __suppress_print(self):
         # Suppress print
         suppress_text = io.StringIO()
-        sys.stdout = suppress_text 
+        sys.stdout = suppress_text
 
     def __release_print(self):
         # Release print
@@ -43,7 +44,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        self.__assertListEquality(tokens, [Token(token_type, '', 1)])
+        self.__assertListEquality(tokens, [Token(token_type, "", 1)])
 
     def __setup(self, source_code):
         self.source_filename = "lexical-analysis-test.simc"
@@ -51,7 +52,9 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.__write_to_file(self.source_filename, source_code)
 
         self.symbol_table = SymbolTable()
-        self.lexical_analyzer = LexicalAnalyzer(source_filename=self.source_filename, symbol_table=self.symbol_table)
+        self.lexical_analyzer = LexicalAnalyzer(
+            source_filename=self.source_filename, symbol_table=self.symbol_table
+        )
 
         # Set initial index
         self.lexical_analyzer.current_source_index = 0
@@ -78,7 +81,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.__setup(source_code=empty_source_code)
 
         self.__write_to_file(self.source_filename, empty_source_code)
-        
+
         source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
         self.assertEqual(source_code, empty_source_code + "\0")
 
@@ -115,49 +118,76 @@ class TestLexicalAnalyzer(unittest.TestCase):
     def test___check_next_token_first_character(self):
         self.__setup(source_code="1+2")
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
 
         # True case - Match first character in list
         self.lexical_analyzer.current_source_index = 0
-        self.lexical_analyzer._LexicalAnalyzer__check_next_token(['+'], ["plus"], "minus")
-        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("plus", "", self.lexical_analyzer.line_num))
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(
+            ["+"], ["plus"], "minus"
+        )
+        self.assertEqual(
+            self.lexical_analyzer.tokens[-1],
+            Token("plus", "", self.lexical_analyzer.line_num),
+        )
 
     def test___check_next_token_after_first_character(self):
         self.__setup(source_code="1+2")
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
 
         # True case - Match after first character in list
         self.lexical_analyzer.current_source_index = 0
-        self.lexical_analyzer._LexicalAnalyzer__check_next_token(['/', '+'], ["divide", "plus"], "minus")
-        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("plus", "", self.lexical_analyzer.line_num))
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(
+            ["/", "+"], ["divide", "plus"], "minus"
+        )
+        self.assertEqual(
+            self.lexical_analyzer.tokens[-1],
+            Token("plus", "", self.lexical_analyzer.line_num),
+        )
 
     def test___check_next_token_false_case(self):
         self.__setup(source_code="1+2")
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
 
-        # False case 
+        # False case
         self.lexical_analyzer.current_source_index = 0
-        self.lexical_analyzer._LexicalAnalyzer__check_next_token(["/"], ["divide"], "minus")
-        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("minus", "", self.lexical_analyzer.line_num))
+        self.lexical_analyzer._LexicalAnalyzer__check_next_token(
+            ["/"], ["divide"], "minus"
+        )
+        self.assertEqual(
+            self.lexical_analyzer.tokens[-1],
+            Token("minus", "", self.lexical_analyzer.line_num),
+        )
 
     def test___is_keyword_true_case(self):
         self.__setup(source_code="")
 
         # True cases
-        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("print"), True)
-        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("true"), True)
+        self.assertEqual(
+            self.lexical_analyzer._LexicalAnalyzer__is_keyword("print"), True
+        )
+        self.assertEqual(
+            self.lexical_analyzer._LexicalAnalyzer__is_keyword("true"), True
+        )
 
     def test___is_keyword_false_case(self):
         self.__setup(source_code="")
 
         # False cases
         self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("1"), False)
-        self.assertEqual(self.lexical_analyzer._LexicalAnalyzer__is_keyword("id"), False)
+        self.assertEqual(
+            self.lexical_analyzer._LexicalAnalyzer__is_keyword("id"), False
+        )
 
     def test___numeric_val_integer(self):
         self.__setup(source_code="")
@@ -168,7 +198,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         self.lexical_analyzer._LexicalAnalyzer__numeric_val()
 
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['314', 'int', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["314", "int", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
     def test___numeric_val_float(self):
@@ -179,7 +212,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__numeric_val()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['3.14', 'float', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["3.14", "float", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
     def test___numeric_val_double(self):
@@ -190,7 +226,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__numeric_val()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['3.14159265', 'double', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["3.14159265", "double", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
     def test___numeric_val_error(self):
@@ -214,7 +253,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__string_val()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['"hello world"', 'string', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ['"hello world"', "string", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
     def test___string_val_string_starting_with_single_quote(self):
@@ -225,7 +267,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ['"hello world"', 'string', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ['"hello world"', "string", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
     def test___string_val_char_starting_with_double_quote(self):
@@ -236,7 +281,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__string_val()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["'h'", 'char', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["'h'", "char", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
     def test___string_val_char_starting_with_single_quote(self):
@@ -247,7 +295,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["'h'", 'char', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["'h'", "char", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
     def test___string_val_string_untertminated_string(self):
@@ -271,7 +322,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["true", 'bool', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["true", "bool", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("bool", 1, 0))
 
     def test___keyword_identifier_math_constant(self):
@@ -282,7 +336,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["PI", 'double', 'constant'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["PI", "double", "constant"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
     def test___keyword_identifier_keyword(self):
@@ -303,7 +360,10 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
-        self.assertEqual(self.lexical_analyzer.symbol_table.symbol_table[1], ["variable", 'var', 'variable'])
+        self.assertEqual(
+            self.lexical_analyzer.symbol_table.symbol_table[1],
+            ["variable", "var", "variable"],
+        )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("id", 1, 0))
 
     def test___keyword_identifier_c_keyword_error(self):
@@ -328,13 +388,18 @@ class TestLexicalAnalyzer(unittest.TestCase):
         """
         self.__setup(source_code=raw_c_source_code)
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
         self.lexical_analyzer._LexicalAnalyzer__get_raw_tokens()
 
-        tokens_to_match = [Token('RAW_C', '', 0), Token('RAW_C', '        BEGIN_C', 1),
-                           Token('RAW_C', '            int a = 10;', 2), 
-                           Token('RAW_C', '            printf("%d", a);', 3)]
+        tokens_to_match = [
+            Token("RAW_C", "", 0),
+            Token("RAW_C", "        BEGIN_C", 1),
+            Token("RAW_C", "            int a = 10;", 2),
+            Token("RAW_C", '            printf("%d", a);', 3),
+        ]
 
         self.__assertListEquality(self.lexical_analyzer.tokens, tokens_to_match)
 
@@ -345,11 +410,13 @@ class TestLexicalAnalyzer(unittest.TestCase):
         """
         self.__setup(source_code=raw_c_source_code)
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
         self.lexical_analyzer._LexicalAnalyzer__get_raw_tokens()
 
-        tokens_to_match = [Token('RAW_C', '', 0), Token('RAW_C', '        BEGIN_C', 1)]
+        tokens_to_match = [Token("RAW_C", "", 0), Token("RAW_C", "        BEGIN_C", 1)]
 
         self.__assertListEquality(self.lexical_analyzer.tokens, tokens_to_match)
 
@@ -359,7 +426,9 @@ class TestLexicalAnalyzer(unittest.TestCase):
         """
         self.__setup(source_code=raw_c_source_code)
 
-        self.lexical_analyzer.source_code = self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        self.lexical_analyzer.source_code = (
+            self.lexical_analyzer._LexicalAnalyzer__read_source_code()
+        )
         self.lexical_analyzer.tokens = []
 
         self.__suppress_print()
@@ -379,8 +448,12 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('newline', '', 1), Token('BEGIN_C', '', 2), Token('RAW_C', '', 2),
-                           Token('RAW_C', '            printf("Hello World");', 3)]
+        tokens_to_match = [
+            Token("newline", "", 1),
+            Token("BEGIN_C", "", 2),
+            Token("RAW_C", "", 2),
+            Token("RAW_C", '            printf("Hello World");', 3),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -390,7 +463,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('number', 1, 1)]
+        tokens_to_match = [Token("number", 1, 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -400,7 +473,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('string', 1, 1)]
+        tokens_to_match = [Token("string", 1, 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -410,7 +483,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('string', 1, 1)]
+        tokens_to_match = [Token("string", 1, 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -420,7 +493,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('var', '', 1), Token('id', 1, 1)]
+        tokens_to_match = [Token("var", "", 1), Token("id", 1, 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -430,7 +503,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('left_paren', '', 1), Token('right_paren', '', 1)]
+        tokens_to_match = [Token("left_paren", "", 1), Token("right_paren", "", 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -462,7 +535,11 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('left_paren', '', 1), Token('right_paren', '', 1), Token('call_end', '', 1)]
+        tokens_to_match = [
+            Token("left_paren", "", 1),
+            Token("right_paren", "", 1),
+            Token("call_end", "", 1),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -472,10 +549,9 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('newline', '', 1)]
+        tokens_to_match = [Token("newline", "", 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
-
 
     def test_lexical_analyze_newline_parantheses_not_matching(self):
         source_code = "(\n"
@@ -494,7 +570,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('left_brace', '', 1), Token('right_brace', '', 1)]
+        tokens_to_match = [Token("left_brace", "", 1), Token("right_brace", "", 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -526,7 +602,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('left_bracket', '', 1), Token('right_bracket', '', 1)]
+        tokens_to_match = [Token("left_bracket", "", 1), Token("right_bracket", "", 1)]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -603,9 +679,16 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('newline', '', 1), Token('var', '', 2), Token('id', 1, 2),
-                           Token('newline', '', 2), Token('id', 1, 3), Token('bitwise_and_equal', '', 3),
-                           Token('number', 2, 3), Token('newline', '', 3)]
+        tokens_to_match = [
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("bitwise_and_equal", "", 3),
+            Token("number", 2, 3),
+            Token("newline", "", 3),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -615,9 +698,14 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('var', '', 1), Token('id', 1, 1),  Token('assignment', '', 1), 
-                           Token('number', 2, 1), Token('bitwise_and', '', 1),
-                           Token('number', 3, 1)]
+        tokens_to_match = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("assignment", "", 1),
+            Token("number", 2, 1),
+            Token("bitwise_and", "", 1),
+            Token("number", 3, 1),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -642,9 +730,11 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.__setup(source_code=source_code)
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
-  
-        tokens_to_match = [Token('single_line_comment', ' This is a comment', 1),
-                           Token('newline', '', 1)]
+
+        tokens_to_match = [
+            Token("single_line_comment", " This is a comment", 1),
+            Token("newline", "", 1),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 
@@ -657,10 +747,16 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         tokens, _ = self.lexical_analyzer.lexical_analyze()
 
-        tokens_to_match = [Token('multi_line_comment', '''
+        tokens_to_match = [
+            Token(
+                "multi_line_comment",
+                """
         This is a multi-line comment
-        ''', 3), Token('newline', '', 3)]
-
+        """,
+                3,
+            ),
+            Token("newline", "", 3),
+        ]
 
         self.__assertListEquality(tokens, tokens_to_match)
 

@@ -2,6 +2,7 @@ import unittest
 
 from simc.symbol_table import SymbolTable
 
+
 class TestSymbolTable(unittest.TestCase):
 
     ####################################################################################################

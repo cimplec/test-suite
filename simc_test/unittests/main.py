@@ -16,6 +16,7 @@ from .parser.test_struct_parser import TestStructParser
 from .parser.test_variable_parser import TestVariableParser
 from .parser.test_simc_parser import TestSimcParser
 
+
 def unit_test():
     # List of test classes to run
     test_classes_to_run = [
@@ -31,7 +32,7 @@ def unit_test():
         TestLoopParser,
         TestStructParser,
         TestVariableParser,
-        TestSimcParser
+        TestSimcParser,
     ]
 
     loader = unittest.TestLoader()

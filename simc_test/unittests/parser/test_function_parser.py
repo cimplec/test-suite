@@ -8,6 +8,7 @@ from simc.token_class import Token
 from simc.symbol_table import SymbolTable
 from simc.lexical_analyzer import LexicalAnalyzer
 
+
 class TestFunctionParser(unittest.TestCase):
 
     ####################################################################################################
@@ -16,7 +17,7 @@ class TestFunctionParser(unittest.TestCase):
     def __suppress_print(self):
         # Suppress print
         suppress_text = io.StringIO()
-        sys.stdout = suppress_text 
+        sys.stdout = suppress_text
 
     def __release_print(self):
         # Release print
@@ -51,7 +52,9 @@ class TestFunctionParser(unittest.TestCase):
         self.__suppress_print()
 
         with self.assertRaises(SystemExit):
-            _, _, _ = function_call_statement(tokens=tokens, i=21, table=table, func_ret_type={})
+            _, _, _ = function_call_statement(
+                tokens=tokens, i=21, table=table, func_ret_type={}
+            )
 
         self.__release_print()
 
@@ -69,7 +72,7 @@ class TestFunctionParser(unittest.TestCase):
 
         opcodes = parse(tokens, table)
 
-        self.assertEqual(opcodes[5], OpCode('func_call', 'sum---1&&&2', ''))
+        self.assertEqual(opcodes[5], OpCode("func_call", "sum---1&&&2", ""))
 
     def test_extract_func_typedata(self):
         table = SymbolTable()
@@ -77,8 +80,8 @@ class TestFunctionParser(unittest.TestCase):
         typedata = "sum---a---b"
 
         params, _ = extract_func_typedata(typedata, table)
-        
-        self.assertEqual(params, ['a', 'b'])
+
+        self.assertEqual(params, ["a", "b"])
 
     def test_fill_missing_args_with_defaults(self):
         op_value_list = ["1", "2", "3", "4"]
@@ -86,18 +89,22 @@ class TestFunctionParser(unittest.TestCase):
         num_actual_params = 4
         num_formal_params = 6
 
-        args = fill_missing_args_with_defaults(op_value_list, default_values, num_actual_params, num_formal_params)
-        
-        self.assertEqual(args, ['1', '2', '3', '4', '5', '6)'])
+        args = fill_missing_args_with_defaults(
+            op_value_list, default_values, num_actual_params, num_formal_params
+        )
+
+        self.assertEqual(args, ["1", "2", "3", "4", "5", "6)"])
 
     def test_function_definition_statement_func_name_missing(self):
         tokens_list = [Token("fun", "", 1), Token("left_paren", "", 1)]
         table = SymbolTable()
 
         self.__suppress_print()
-        
+
         with self.assertRaises(SystemExit):
-            _, _, _, _ = function_definition_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+            _, _, _, _ = function_definition_statement(
+                tokens=tokens_list, i=1, table=table, func_ret_type={}
+            )
 
         self.__release_print()
 
@@ -106,12 +113,13 @@ class TestFunctionParser(unittest.TestCase):
         table = SymbolTable()
 
         self.__suppress_print()
-        
+
         with self.assertRaises(SystemExit):
-            _, _, _, _ = function_definition_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+            _, _, _, _ = function_definition_statement(
+                tokens=tokens_list, i=1, table=table, func_ret_type={}
+            )
 
         self.__release_print()
-
 
     def test_function_call_statement_no_error(self):
         source_code = """
@@ -127,4 +135,4 @@ class TestFunctionParser(unittest.TestCase):
 
         opcodes = parse(tokens, table)
 
-        self.assertEqual(opcodes[0], OpCode('func_decl', 'sum---a&&&b', ''))
+        self.assertEqual(opcodes[0], OpCode("func_decl", "sum---a&&&b", ""))

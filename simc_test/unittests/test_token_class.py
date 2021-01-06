@@ -2,6 +2,7 @@ import unittest
 
 from simc.token_class import Token
 
+
 class TestTokenClass(unittest.TestCase):
 
     ####################################################################################################

@@ -8,6 +8,7 @@ from simc.token_class import Token
 from simc.symbol_table import SymbolTable
 from simc.lexical_analyzer import LexicalAnalyzer
 
+
 class TestSimcParser(unittest.TestCase):
 
     ####################################################################################################
@@ -16,7 +17,7 @@ class TestSimcParser(unittest.TestCase):
     def __suppress_print(self):
         # Suppress print
         suppress_text = io.StringIO()
-        sys.stdout = suppress_text 
+        sys.stdout = suppress_text
 
     def __release_print(self):
         # Release print
@@ -41,13 +42,25 @@ class TestSimcParser(unittest.TestCase):
     # TESTS
     ####################################################################################################
     def test_expression_unknown_variable_error(self):
-        tokens_list = [Token('var', '', 1), Token('id', 1, 1), Token('assignment', '', 1),
-                       Token('number', 2, 1), Token('newline', '', 1), Token('print', '', 2),
-                       Token('left_paren', '', 2), Token('string', 3, 2), Token('right_paren', '', 2),
-                       Token('call_end', '', 2),  Token('newline', '', 2)]
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("assignment", "", 1),
+            Token("number", 2, 1),
+            Token("newline", "", 1),
+            Token("print", "", 2),
+            Token("left_paren", "", 2),
+            Token("string", 3, 2),
+            Token("right_paren", "", 2),
+            Token("call_end", "", 2),
+            Token("newline", "", 2),
+        ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable'], 2: ['1', 'int', 'constant'], 
-                              3: ['"value = {a}"', 'string', 'constant']}
+        table.symbol_table = {
+            1: ["a", "var", "variable"],
+            2: ["1", "int", "constant"],
+            3: ['"value = {a}"', "string", "constant"],
+        }
 
         self.__suppress_print()
 
@@ -57,11 +70,18 @@ class TestSimcParser(unittest.TestCase):
         self.__release_print()
 
     def test_expression_cannot_find_type_error(self):
-        tokens_list = [Token('var', '', 1), Token('id', 1, 1), Token('newline', '', 2),
-                       Token('print', '', 2), Token('left_paren', '', 2), Token('id', 1, 2),
-                       Token('right_paren', '', 2), Token('newline', '', 2)]
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("newline", "", 2),
+            Token("print", "", 2),
+            Token("left_paren", "", 2),
+            Token("id", 1, 2),
+            Token("right_paren", "", 2),
+            Token("newline", "", 2),
+        ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable']}
+        table.symbol_table = {1: ["a", "var", "variable"]}
 
         self.__suppress_print()
 
@@ -71,7 +91,7 @@ class TestSimcParser(unittest.TestCase):
         self.__release_print()
 
     def test_print_statement_expected_left_paren_error(self):
-        tokens_list = [Token('print', '', 1), Token('var', '', 1)]
+        tokens_list = [Token("print", "", 1), Token("var", "", 1)]
         table = SymbolTable()
 
         self.__suppress_print()
@@ -82,39 +102,60 @@ class TestSimcParser(unittest.TestCase):
         self.__release_print()
 
     def test_print_statement_no_error(self):
-        tokens_list = [Token('print', '', 1), Token('left_paren', '', 1), Token('string', 1, 1),
-                       Token('right_paren', '', 1), Token('newline', '', 1)]
+        tokens_list = [
+            Token("print", "", 1),
+            Token("left_paren", "", 1),
+            Token("string", 1, 1),
+            Token("right_paren", "", 1),
+            Token("newline", "", 1),
+        ]
         table = SymbolTable()
         table.entry('"hello world"', "string", "constant")
 
-        opcode, _, _ = print_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
-        
-        self.assertEqual(opcode, OpCode('print', '"hello world"', None))
+        opcode, _, _ = print_statement(
+            tokens=tokens_list, i=1, table=table, func_ret_type={}
+        )
+
+        self.assertEqual(opcode, OpCode("print", '"hello world"', None))
 
     def test_unary_statement_pre_increment(self):
-        tokens_list = [Token('var', '', 1), Token('id', 1, 1), Token('assignment', '', 1),
-                       Token('number', 2, 1), Token('newline', '', 1), Token('increment', '', 2),
-                       Token('id', 1, 2), Token('newline', '', 2)]
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("assignment", "", 1),
+            Token("number", 2, 1),
+            Token("newline", "", 1),
+            Token("increment", "", 2),
+            Token("id", 1, 2),
+            Token("newline", "", 2),
+        ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable'], 2: ['1', 'int', 'constant']}
+        table.symbol_table = {1: ["a", "var", "variable"], 2: ["1", "int", "constant"]}
 
         opcodes = parse(tokens=tokens_list, table=table)
-        
-        self.assertEqual(opcodes[1], OpCode('unary', '++ a', None))
+
+        self.assertEqual(opcodes[1], OpCode("unary", "++ a", None))
 
     def test_unary_statement_post_decrement(self):
-        tokens_list = [Token('var', '', 1), Token('id', 1, 1), Token('assignment', '', 1),
-                       Token('number', 2, 1), Token('newline', '', 1), Token('id', 1, 2),
-                       Token('decrement', '', 2), Token('newline', '', 2)]
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("assignment", "", 1),
+            Token("number", 2, 1),
+            Token("newline", "", 1),
+            Token("id", 1, 2),
+            Token("decrement", "", 2),
+            Token("newline", "", 2),
+        ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable'], 2: ['1', 'int', 'constant']}
+        table.symbol_table = {1: ["a", "var", "variable"], 2: ["1", "int", "constant"]}
 
         opcodes = parse(tokens=tokens_list, table=table)
-       
-        self.assertEqual(opcodes[1], OpCode('unary', 'a -- ', None))
+
+        self.assertEqual(opcodes[1], OpCode("unary", "a -- ", None))
 
     def test_exit_statement_expected_left_paren_error(self):
-        tokens_list = [Token('exit', '', 1), Token('print', '', 1)]
+        tokens_list = [Token("exit", "", 1), Token("print", "", 1)]
         table = SymbolTable()
 
         self.__suppress_print()
@@ -125,7 +166,11 @@ class TestSimcParser(unittest.TestCase):
         self.__release_print()
 
     def test_exit_statement_expected_number_error(self):
-        tokens_list = [Token('exit', '', 1), Token('left_paren', '', 1), Token('print', '', 1)]
+        tokens_list = [
+            Token("exit", "", 1),
+            Token("left_paren", "", 1),
+            Token("print", "", 1),
+        ]
         table = SymbolTable()
 
         self.__suppress_print()
@@ -136,17 +181,23 @@ class TestSimcParser(unittest.TestCase):
         self.__release_print()
 
     def test_exit_no_error(self):
-        tokens_list = [Token('exit', '', 1), Token('left_paren', '', 1), Token('number', 1, 1),
-                       Token('right_paren', '', 1)]
+        tokens_list = [
+            Token("exit", "", 1),
+            Token("left_paren", "", 1),
+            Token("number", 1, 1),
+            Token("right_paren", "", 1),
+        ]
         table = SymbolTable()
         table.entry("0", "int", "constant")
 
-        opcode, _, _ = exit_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
-        
-        self.assertEqual(opcode, OpCode('exit', '0', None))
+        opcode, _, _ = exit_statement(
+            tokens=tokens_list, i=1, table=table, func_ret_type={}
+        )
+
+        self.assertEqual(opcode, OpCode("exit", "0", None))
 
     def test_skip_all_nextlines_no_nextline(self):
-        tokens_list = [Token('print', '', 1), Token('var', '', 1)]
+        tokens_list = [Token("print", "", 1), Token("var", "", 1)]
 
         i = 0
         i = skip_all_nextlines(tokens=tokens_list, i=0)
@@ -154,7 +205,11 @@ class TestSimcParser(unittest.TestCase):
         self.assertEqual(i, 1)
 
     def test_skip_all_nextlines_some_nextline(self):
-        tokens_list = [Token('newline', '', 1), Token('newline', '', 1), Token('print', '', 1)]
+        tokens_list = [
+            Token("newline", "", 1),
+            Token("newline", "", 1),
+            Token("print", "", 1),
+        ]
 
         i = 0
         i = skip_all_nextlines(tokens=tokens_list, i=0)
@@ -162,9 +217,15 @@ class TestSimcParser(unittest.TestCase):
         self.assertEqual(i, 2)
 
     def test_parse_empty_function_body_error(self):
-        tokens_list = [Token('fun', '', 1), Token('id', 1, 1), Token('left_paren', '', 1), 
-                       Token('right_paren', '', 1), Token('newline', '', 1), Token('newline', '', 1),
-                       Token('MAIN', '', 2)]
+        tokens_list = [
+            Token("fun", "", 1),
+            Token("id", 1, 1),
+            Token("left_paren", "", 1),
+            Token("right_paren", "", 1),
+            Token("newline", "", 1),
+            Token("newline", "", 1),
+            Token("MAIN", "", 2),
+        ]
         table = SymbolTable()
         table.entry("func", "var", "variable")
 
@@ -187,14 +248,14 @@ class TestSimcParser(unittest.TestCase):
         """
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[1], OpCode('scope_begin', '', ''))
-        self.assertEqual(opcodes[3], OpCode('scope_over', '', ''))
-    
+        self.assertEqual(opcodes[1], OpCode("scope_begin", "", ""))
+        self.assertEqual(opcodes[3], OpCode("scope_over", "", ""))
+
     def test_parse_import_expected_module_name_error(self):
         source_code = """
         import 
         """
-        
+
         self.__suppress_print()
 
         with self.assertRaises(SystemExit):
@@ -231,7 +292,7 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[5], OpCode('func_call', 'hello---', ''))
+        self.assertEqual(opcodes[5], OpCode("func_call", "hello---", ""))
 
     def test_parse_cannot_define_function_inside_another_function(self):
         source_code = """
@@ -257,7 +318,7 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[-1], OpCode('struct_scope_over', '', ''))
+        self.assertEqual(opcodes[-1], OpCode("struct_scope_over", "", ""))
 
     def test_parse_cannot_have_more_than_one_main_error(self):
         source_code = """
@@ -290,7 +351,7 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        
+
         self.assertEqual(opcodes[0], OpCode("do", "", ""))
 
     def test_parse_else_if_else_opcodes(self):
@@ -305,8 +366,8 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[2], OpCode('else_if', '2', None))
-        self.assertEqual(opcodes[4], OpCode('else', '', ''))
+        self.assertEqual(opcodes[2], OpCode("else_if", "2", None))
+        self.assertEqual(opcodes[4], OpCode("else", "", ""))
 
     def test_parse_no_matching_if_for_else_error(self):
         source_code = """
@@ -345,7 +406,7 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[2], OpCode('return', '1 + 2', ''))
+        self.assertEqual(opcodes[2], OpCode("return", "1 + 2", ""))
 
     def test_parse_break_opcode(self):
         source_code = """
@@ -354,7 +415,7 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[0], OpCode('break', '', ''))
+        self.assertEqual(opcodes[0], OpCode("break", "", ""))
 
     def test_parse_continue_opcode(self):
         source_code = """
@@ -363,7 +424,7 @@ class TestSimcParser(unittest.TestCase):
 
         opcodes = self.__get_opcodes(source_code)
 
-        self.assertEqual(opcodes[0], OpCode('continue', '', ''))
+        self.assertEqual(opcodes[0], OpCode("continue", "", ""))
 
     def test_parse_single_line_comment_opcode(self):
         source_code = """
@@ -371,8 +432,10 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        
-        self.assertEqual(opcodes[0], OpCode('single_line_comment', ' This is a comment', ''))
+
+        self.assertEqual(
+            opcodes[0], OpCode("single_line_comment", " This is a comment", "")
+        )
 
     def test_parse_multi_line_comment_opcode(self):
         source_code = """
@@ -381,9 +444,16 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        
-        self.assertEqual(opcodes[0], OpCode('multi_line_comment', ''' This is a comment
-        Spanning multiple lines ''', ''))
+
+        self.assertEqual(
+            opcodes[0],
+            OpCode(
+                "multi_line_comment",
+                """ This is a comment
+        Spanning multiple lines """,
+                "",
+            ),
+        )
 
     def test_parse_missing_colon_after_default_error(self):
         source_code = """
@@ -403,8 +473,8 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        
-        self.assertEqual(opcodes[0], OpCode('default', '', ''))
+
+        self.assertEqual(opcodes[0], OpCode("default", "", ""))
 
     def test_parse_no_matching_end_main_for_main_error(self):
         source_code = """

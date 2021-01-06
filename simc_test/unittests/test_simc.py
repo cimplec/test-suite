@@ -2,6 +2,7 @@ import unittest
 import os
 import subprocess
 
+
 class TestSimc(unittest.TestCase):
 
     ####################################################################################################
@@ -25,8 +26,13 @@ class TestSimc(unittest.TestCase):
 
         output = subprocess.getoutput("simc test-simc.simc token").split("\n")
 
-        compare_list = ["Token('print', '', '1')", "Token('left_paren', '', '1')", "Token('string', '1', '1')", 
-                        "Token('right_paren', '', '1')", '\x1b[92mC code generated at test-simc.c! \x1b[m']
+        compare_list = [
+            "Token('print', '', '1')",
+            "Token('left_paren', '', '1')",
+            "Token('string', '1', '1')",
+            "Token('right_paren', '', '1')",
+            "\x1b[92mC code generated at test-simc.c! \x1b[m",
+        ]
 
         self.__assertListEquality(output, compare_list)
 
@@ -36,8 +42,10 @@ class TestSimc(unittest.TestCase):
         self.__write_to_file("test-simc.simc", source_code)
 
         output = subprocess.getoutput("simc test-simc.simc opcode").split("\n")
-        
-        compare_list = ['OpCode(\'print\', \'"Hello World"\', \'None\')', '\x1b[92mC code generated at test-simc.c! \x1b[m']
+
+        compare_list = [
+            "OpCode('print', '\"Hello World\"', 'None')",
+            "\x1b[92mC code generated at test-simc.c! \x1b[m",
+        ]
 
         self.__assertListEquality(output, compare_list)
-        

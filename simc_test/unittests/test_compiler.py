@@ -277,3 +277,65 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_if_else_if_else_statements(self):
+        source_code = """
+        if(1)
+            print("Hello")
+        else if(2)
+            print("Bye")
+        else
+            print("World")
+        """
+
+        c_source_code = '#include <stdio.h>\n\tif(1) \tprintf("Hello");\n\telse if(2) \tprintf("Bye");\n\telse \tprintf("World");\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_exit_statement(self):
+        source_code = """
+        exit(0)
+        """
+
+        c_source_code = '\n\texit(0);\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_return_statement(self):
+        source_code = """
+        MAIN
+            return 1
+        END_MAIN
+        """
+
+        c_source_code = '\n\nint main() {\n\n\treturn 1;\n\n}\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_break_statement(self):
+        source_code = """
+        break
+        """
+
+        c_source_code = '\n\tbreak;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_continue_statement(self):
+        source_code = """
+        continue
+        """
+
+        c_source_code = '\n\tcontinue;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

@@ -115,6 +115,10 @@ class TestCompiler(unittest.TestCase):
         
         self.assertEqual(c_source_code, c_compiled_code)
 
+    def test_compile_var_assign_statement(self):
+        pass
+        # TODO: Complete this
+
     def test_compile_ptr_assign_statement(self):
         source_code = """
         var *a = 1
@@ -170,4 +174,43 @@ class TestCompiler(unittest.TestCase):
         
         self.assertEqual(c_source_code, c_compiled_code)
 
-    
+    def test_compile_assign_statement(self):
+        pass
+        # TODO: Complete this
+
+    def test_compile_ptr_only_assign_statement(self):
+        pass
+        # TODO: Complete this after #448 is fixed
+
+    def test_compile_unary_statement(self):
+        source_code = """
+        var a = 1
+        ++a
+        """
+
+        c_source_code = '\n\tint a = 1;\n\t++a;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_func_decl_statement(self):
+        pass
+        # TODO: Complete this
+
+    def test_compile_func_call_statement(self):
+        pass
+        # TODO: Complete this
+
+    def test_struct_decl_statement(self):
+        source_code = """
+        struct hello {
+            var a = 1
+        }
+        """
+
+        c_source_code = '\n\nstruct hello {\n\tint a = 1;\n} ;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

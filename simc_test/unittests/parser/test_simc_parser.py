@@ -1,10 +1,12 @@
 import unittest
 import io
 import sys
+import subprocess
 
 from simc.parser.simc_parser import *
 from simc.token_class import Token
 from simc.symbol_table import SymbolTable
+from simc.lexical_analyzer import LexicalAnalyzer
 
 class TestSimcParser(unittest.TestCase):
 
@@ -19,6 +21,21 @@ class TestSimcParser(unittest.TestCase):
     def __release_print(self):
         # Release print
         sys.stdout = sys.__stdout__
+
+    def __write_to_file(self, source_code):
+        with open("simc-parser-test.simc", "w") as file:
+            file.write(source_code)
+
+    def __get_opcodes(self, source_code):
+        self.__write_to_file(source_code)
+
+        table = SymbolTable()
+        lexer = LexicalAnalyzer("simc-parser-test.simc", table)
+        tokens, _ = lexer.lexical_analyze()
+
+        opcodes = parse(tokens, table)
+
+        return opcodes
 
     ####################################################################################################
     # TESTS
@@ -145,14 +162,133 @@ class TestSimcParser(unittest.TestCase):
         self.assertEqual(i, 2)
 
     def test_parse_empty_function_body_error(self):
-        tokens_list = [Token('fun', '', 1), Token('id', 1, 1), Token('left_paren', '', 1), Token('right_paren', '', 1)]
+        tokens_list = [Token('fun', '', 1), Token('id', 1, 1), Token('left_paren', '', 1), 
+                       Token('right_paren', '', 1), Token('newline', '', 1), Token('newline', '', 1),
+                       Token('MAIN', '', 2)]
         table = SymbolTable()
         table.entry("func", "var", "variable")
 
-        # self.__suppress_print()
+        self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = parse(tokens=tokens_list, table=table)
 
         self.__release_print()
+
+    def test_parse_scope_begin_scope_over_opcodes(self):
+        source_code = """
+        fun hello() {
+            return 1
+        }
+
+        MAIN
+            var a = hello()
+        END_MAIN
+        """
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[1], OpCode('scope_begin', '', ''))
+        self.assertEqual(opcodes[3], OpCode('scope_over', '', ''))
     
+    def test_parse_import_expected_module_name_error(self):
+        source_code = """
+        import 
+        """
+        
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_import_no_error(self):
+        source_code = """
+        import geometry
+        """
+
+        self.__suppress_print()
+
+        try:
+            opcodes = self.__get_opcodes(source_code)
+        except:
+            _ = subprocess.getoutput("simpack --name geometry")
+            opcodes = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+        self.assertEqual(opcodes[0], OpCode("import", "geometry"))
+
+    def test_parse_func_call_opcode(self):
+        source_code = """
+        fun hello()
+            print("Hello")
+
+        MAIN
+            hello()
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[5], OpCode('func_call', 'hello---', ''))
+
+    def test_parse_cannot_define_function_inside_another_function(self):
+        source_code = """
+        MAIN
+            fun hello()
+                print("Hello")
+        END_MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_struct_scope_over_opcode(self):
+        source_code = """
+        struct hello {
+            var a = 1
+        }
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[-1], OpCode('struct_scope_over', '', ''))
+
+    def test_parse_cannot_have_more_than_one_main_error(self):
+        source_code = """
+        MAIN
+        MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_main_end_main_opcodes(self):
+        source_code = """
+        MAIN
+
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[0], OpCode("MAIN", "", ""))
+        self.assertEqual(opcodes[1], OpCode("END_MAIN", "", ""))
+
+    def test_parse_do_opcode(self):
+        source_code = """
+        do {}
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        
+        self.assertEqual(opcodes[0], OpCode("do", "", ""))

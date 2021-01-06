@@ -2,7 +2,7 @@ import unittest
 import io
 import sys
 
-from simc.parser.array_parser import array_initializer
+from simc.parser.array_parser import *
 from simc.token_class import Token
 from simc.symbol_table import SymbolTable
 

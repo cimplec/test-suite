@@ -12,6 +12,7 @@ from .parser.test_array_parser import TestArrayParser
 from .parser.test_conditional_parser import TestConditionalParser
 from .parser.test_function_parser import TestFunctionParser
 from .parser.test_loop_parser import TestLoopParser
+from .parser.test_struct_parser import TestStructParser
 
 def unit_test():
     # List of test classes to run
@@ -26,6 +27,7 @@ def unit_test():
         TestConditionalParser,
         TestFunctionParser,
         TestLoopParser,
+        TestStructParser,
     ]
 
     loader = unittest.TestLoader()

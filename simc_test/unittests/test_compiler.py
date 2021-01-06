@@ -114,3 +114,58 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_ptr_assign_statement(self):
+        source_code = """
+        var *a = 1
+        """
+
+        c_source_code = '#include <stdio.h>\n\tint *a = 1;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_var_no_assign_statement(self):
+        source_code = """
+        var a
+        """
+
+        c_source_code = '\n\tdeclared a;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_ptr_no_assign_statement(self):
+        source_code = """
+        var *a
+        """
+
+        c_source_code = '\n\tdeclared *a;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_array_no_assign_statement(self):
+        source_code = """
+        var a[2]
+        """
+
+        c_source_code = '\n\tdeclared a[2];\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_array_assign_statement(self):
+        source_code = """
+        var a[2] = {1, 2}
+        """
+
+        c_source_code = '#include <stdio.h>\n\tint a[2] = {1,2};\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

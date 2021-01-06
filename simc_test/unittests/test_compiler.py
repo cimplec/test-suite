@@ -339,3 +339,26 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_single_line_comment_statement(self):
+        source_code = """
+        // This is a single line comment
+        """
+
+        c_source_code = '\n\t//  This is a single line comment \n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_multi_line_comment_statement(self):
+        source_code = """
+        /* This is a multi-line comment
+        And it spans multiple lines */
+        """
+
+        c_source_code = '\n/*  This is a multi-line comment\n        And it spans multiple lines */\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

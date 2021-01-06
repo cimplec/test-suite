@@ -3,8 +3,9 @@ import io
 import sys
 
 from simc.compiler import *
-from simc.token_class import Token
 from simc.symbol_table import SymbolTable
+from simc.lexical_analyzer import LexicalAnalyzer
+from simc.parser.simc_parser import parse
 
 
 class TestCompiler(unittest.TestCase):
@@ -20,6 +21,22 @@ class TestCompiler(unittest.TestCase):
     def __release_print(self):
         # Release print
         sys.stdout = sys.__stdout__
+
+    def __compile(self, source_code):
+        with open("simc-compiler-test.simc", "w") as file:
+            file.write(source_code)
+
+        table = SymbolTable()
+
+        lexer = LexicalAnalyzer("simc-compiler-test.simc", table)
+        tokens, _ = lexer.lexical_analyze()
+
+        opcodes = parse(tokens, table)
+
+        compile(opcodes, "simc-compiler-test.c", table)
+
+        with open("simc-compiler-test.c", "r") as file:
+            return file.read()
 
     ####################################################################################################
     # TESTS
@@ -76,4 +93,24 @@ class TestCompiler(unittest.TestCase):
         self.assertEqual(outside_code, "")
         self.assertEqual(ccode, "\t" + code)
 
-    
+    def test_compile_print_statement(self):
+        source_code = """
+        print('Hello World')
+        """
+
+        c_source_code = '#include <stdio.h>\n\tprintf("Hello World");\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_import_statement(self):
+        source_code = """
+        import geometry
+        """
+
+        c_source_code = '\n#include "geometry.h"\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

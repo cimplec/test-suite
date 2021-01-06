@@ -382,3 +382,18 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_raw_c_statements(self):
+        source_code = """
+        BEGIN_C
+            int a = 1;
+            printf("%d", a);
+        END_C
+        print("Hello")
+        """
+
+        c_source_code = '#include <stdio.h>\n\n            int a = 1;\n            printf("%d", a);\n\tprintf("Hello");\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

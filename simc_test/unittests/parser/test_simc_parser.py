@@ -127,3 +127,20 @@ class TestSimcParser(unittest.TestCase):
         opcode, _, _ = exit_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
         
         self.assertEqual(opcode, OpCode('exit', '0', None))
+
+    def test_skip_all_nextlines_no_nextline(self):
+        tokens_list = [Token('print', '', 1), Token('var', '', 1)]
+
+        i = 0
+        i = skip_all_nextlines(tokens=tokens_list, i=0)
+
+        self.assertEqual(i, 1)
+
+    def test_skip_all_nextlines_some_nextline(self):
+        tokens_list = [Token('newline', '', 1), Token('newline', '', 1), Token('print', '', 1)]
+
+        i = 0
+        i = skip_all_nextlines(tokens=tokens_list, i=0)
+
+        self.assertEqual(i, 2)
+    

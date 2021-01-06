@@ -143,4 +143,16 @@ class TestSimcParser(unittest.TestCase):
         i = skip_all_nextlines(tokens=tokens_list, i=0)
 
         self.assertEqual(i, 2)
+
+    def test_parse_empty_function_body_error(self):
+        tokens_list = [Token('fun', '', 1), Token('id', 1, 1), Token('left_paren', '', 1), Token('right_paren', '', 1)]
+        table = SymbolTable()
+        table.entry("func", "var", "variable")
+
+        # self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = parse(tokens=tokens_list, table=table)
+
+        self.__release_print()
     

@@ -8,6 +8,7 @@ from .test_op_code import TestOpCode
 from .test_symbol_table import TestSymbolTable
 from .test_token_class import TestTokenClass
 from .test_simc import TestSimc
+from .test_compiler import TestCompiler
 from .parser.test_array_parser import TestArrayParser
 from .parser.test_conditional_parser import TestConditionalParser
 from .parser.test_function_parser import TestFunctionParser
@@ -26,6 +27,7 @@ def unit_test():
         TestSymbolTable,
         TestTokenClass,
         TestSimc,
+        TestCompiler,
         TestArrayParser,
         TestConditionalParser,
         TestFunctionParser,

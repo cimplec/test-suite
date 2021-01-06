@@ -365,7 +365,7 @@ class TestSimcParser(unittest.TestCase):
 
         self.assertEqual(opcodes[0], OpCode('continue', '', ''))
 
-    def test_parse_continue_opcode(self):
+    def test_parse_single_line_comment_opcode(self):
         source_code = """
         // This is a comment
         """
@@ -374,4 +374,58 @@ class TestSimcParser(unittest.TestCase):
         
         self.assertEqual(opcodes[0], OpCode('single_line_comment', ' This is a comment', ''))
 
-    
+    def test_parse_multi_line_comment_opcode(self):
+        source_code = """
+        /* This is a comment
+        Spanning multiple lines */
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        
+        self.assertEqual(opcodes[0], OpCode('multi_line_comment', ''' This is a comment
+        Spanning multiple lines ''', ''))
+
+    def test_parse_missing_colon_after_default_error(self):
+        source_code = """
+        default print
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_default_opcode(self):
+        source_code = """
+        default:
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        
+        self.assertEqual(opcodes[0], OpCode('default', '', ''))
+
+    def test_parse_no_matching_end_main_for_main_error(self):
+        source_code = """
+        MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_no_matching_main_for_end_main_error(self):
+        source_code = """
+        END_MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()

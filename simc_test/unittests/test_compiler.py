@@ -239,3 +239,41 @@ class TestCompiler(unittest.TestCase):
         c_compiled_code = self.__compile(source_code)
         
         self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_for_statement(self):
+        source_code = """
+        for i in 1 to 10 by +1
+        """
+
+        c_source_code = '\n\tfor(int i = 1; i < 10; i+=1) '
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_while_statement(self):
+        source_code = """
+        while(1) {
+            print("Hello")
+        }
+        """
+
+        c_source_code = '#include <stdio.h>\n\twhile(1) {\n\tprintf("Hello");\n}\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_do_while_do_statements(self):
+        source_code = """
+        do {
+            print("Hello")
+        } 
+        while(1 == 2)
+        """
+
+        c_source_code = '#include <stdio.h>\n\tdo {\n\tprintf("Hello");\n}\n\twhile(1 == 2);'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)

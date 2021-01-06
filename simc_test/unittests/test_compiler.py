@@ -202,7 +202,7 @@ class TestCompiler(unittest.TestCase):
         pass
         # TODO: Complete this
 
-    def test_struct_decl_statement(self):
+    def test_struct_decl_struct_scope_over_statements(self):
         source_code = """
         struct hello {
             var a = 1
@@ -210,6 +210,31 @@ class TestCompiler(unittest.TestCase):
         """
 
         c_source_code = '\n\nstruct hello {\n\tint a = 1;\n} ;\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_scope_begin_scope_over_statements(self):
+        source_code = """
+        fun hello() {
+            print("Hello World")
+        }
+        """
+
+        c_source_code = '#include <stdio.h>\n\nvoid hello(void) {\n\tprintf("Hello World");\n}\n'
+
+        c_compiled_code = self.__compile(source_code)
+        
+        self.assertEqual(c_source_code, c_compiled_code)
+
+    def test_compile_main_end_main_statements(self):
+        source_code = """
+        MAIN
+        END_MAIN
+        """
+
+        c_source_code = '\n\nint main() {\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         

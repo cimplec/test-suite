@@ -292,3 +292,86 @@ class TestSimcParser(unittest.TestCase):
         opcodes = self.__get_opcodes(source_code)
         
         self.assertEqual(opcodes[0], OpCode("do", "", ""))
+
+    def test_parse_else_if_else_opcodes(self):
+        source_code = """
+        if(1)
+            print("Hello")
+        else if(2)
+            print("Bye")
+        else
+            print("World")
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[2], OpCode('else_if', '2', None))
+        self.assertEqual(opcodes[4], OpCode('else', '', ''))
+
+    def test_parse_no_matching_if_for_else_error(self):
+        source_code = """
+        else
+            print('World')
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_return_outside_any_function_error(self):
+        source_code = """
+        return 1
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_return_opcode(self):
+        source_code = """
+        fun hello()
+            return 1+2
+
+        MAIN
+            var a = hello()
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[2], OpCode('return', '1 + 2', ''))
+
+    def test_parse_break_opcode(self):
+        source_code = """
+        break
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[0], OpCode('break', '', ''))
+
+    def test_parse_continue_opcode(self):
+        source_code = """
+        continue
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[0], OpCode('continue', '', ''))
+
+    def test_parse_continue_opcode(self):
+        source_code = """
+        // This is a comment
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        
+        self.assertEqual(opcodes[0], OpCode('single_line_comment', ' This is a comment', ''))
+
+    

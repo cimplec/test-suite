@@ -155,7 +155,7 @@ class TestCompiler(unittest.TestCase):
         var a[2]
         """
 
-        c_source_code = '\n\tdeclared a[2];\n'
+        c_source_code = '\n\tarr_declared *a;\n'
 
         c_compiled_code = self.__compile(source_code)
         

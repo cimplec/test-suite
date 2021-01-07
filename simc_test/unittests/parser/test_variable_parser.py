@@ -202,6 +202,8 @@ class TestVariableParser(unittest.TestCase):
 
         self.assertEqual(opcodes[0], OpCode("ptr_no_assign", "b", None))
 
+    # TODO: Add tests to handle array_only_assign and related errors
+
     def test_assign_statement_ptr_only_assign_no_error(self):
         tokens_list = [
             Token("var", "", 1),

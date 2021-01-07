@@ -172,6 +172,10 @@ class TestCompiler(unittest.TestCase):
         
         self.assertEqual(c_source_code, c_compiled_code)
 
+    def test_compile_array_only_assign_statement(self):
+        pass
+        # TODO: Complete this
+
     def test_compile_ptr_no_assign_statement(self):
         source_code = """
         var *a

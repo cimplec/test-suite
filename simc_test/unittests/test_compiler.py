@@ -1,6 +1,7 @@
 import unittest
 import io
 import sys
+import subprocess
 
 from simc.compiler import *
 from simc.symbol_table import SymbolTable
@@ -111,7 +112,15 @@ class TestCompiler(unittest.TestCase):
 
         c_source_code = '\n#include "geometry.h"\n'
 
-        c_compiled_code = self.__compile(source_code)
+        self.__suppress_print()
+
+        try:
+            c_compiled_code = self.__compile(source_code)
+        except:
+            _ = subprocess.getoutput("simpack --name geometry")
+            c_compiled_code = self.__compile(source_code)
+
+        self.__release_print()
         
         self.assertEqual(c_source_code, c_compiled_code)
 

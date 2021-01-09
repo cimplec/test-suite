@@ -228,6 +228,9 @@ class TestCompiler(unittest.TestCase):
         
         self.assertEqual(c_source_code, c_compiled_code)
 
+    def test_struct_instantiate_statements(self):
+        pass
+
     def test_compile_scope_begin_scope_over_statements(self):
         source_code = """
         fun hello() {

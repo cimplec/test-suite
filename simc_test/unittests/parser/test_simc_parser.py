@@ -499,3 +499,6 @@ class TestSimcParser(unittest.TestCase):
             _ = self.__get_opcodes(source_code)
 
         self.__release_print()
+
+    def test_parse_struct_instantiate_opcode(self):
+        pass

@@ -46,7 +46,7 @@ class TestArrayParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list)
 
-    def test_array_initializer_missing_too_many_initializers(self):
+    def test_array_initializer_too_many_initializers(self):
         tokens_list = [
             Token("assignment", "", 1),
             Token("left_brace", "", 1),
@@ -72,7 +72,7 @@ class TestArrayParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list)
 
-    def test_array_initializer_missing_too_many_unique_types(self):
+    def test_array_initializer_too_many_unique_types(self):
         tokens_list = [
             Token("assignment", "", 1),
             Token("left_brace", "", 1),
@@ -87,7 +87,7 @@ class TestArrayParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list, table)
 
-    def test_array_initializer_missing_cannot_find_type(self):
+    def test_array_initializer_cannot_find_type(self):
         tokens_list = [
             Token("assignment", "", 1),
             Token("left_brace", "", 1),
@@ -102,7 +102,25 @@ class TestArrayParser(unittest.TestCase):
 
         self.__test_error_case(tokens_list, table)
 
-    def test_array_initializer_missing_no_errors(self):
+    def test_array_initializer_number_of_entries_do_not_match(self):
+        tokens_list = [
+            Token("assignment", "", 1),
+            Token("left_brace", "", 1),
+            Token("number", 1, 1),
+            Token("comma", "", 1),
+            Token("number", 2, 1),
+            Token("comma", "", 1),
+            Token("number", 2, 1),
+            Token("right_brace", "", 1),
+        ]
+        table = SymbolTable()
+        table.entry("1", "int", "variable")
+        table.entry("3", "int", "variable")
+        table.entry("4", "int", "variable")
+
+        self.__test_error_case(tokens_list, table)
+
+    def test_array_initializer_no_errors(self):
         tokens_list = [
             Token("assignment", "", 1),
             Token("left_brace", "", 1),

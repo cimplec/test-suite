@@ -576,7 +576,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         self.__assertListEquality(tokens, tokens_to_match)
 
-    def test_lexical_analyze_newline_parantheses_not_matching(self):
+    def test_lexical_analyze_newline_parantheses_does_not_match(self):
         source_code = "(\n"
         self.__setup(source_code=source_code)
 

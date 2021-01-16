@@ -27,14 +27,14 @@ def unit_test():
         TestSymbolTable,
         TestTokenClass,
         TestSimc,
-        TestCompiler,
+        # TestCompiler,
         TestArrayParser,
         TestConditionalParser,
         TestFunctionParser,
         TestLoopParser,
         TestStructParser,
         TestVariableParser,
-        TestSimcParser,
+        # TestSimcParser,
     ]
 
     loader = unittest.TestLoader()

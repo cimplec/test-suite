@@ -127,6 +127,42 @@ class TestVariableParser(unittest.TestCase):
 
         self.__release_print()
 
+    def test_var_statement_array_size_of_array_needs_to_be_known_if_no_assign(self):
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("left_bracket", "", 1),
+            Token("right_bracket", "", 1),
+        ]
+        table = SymbolTable()
+        table.entry("a", "var", "variable")
+        table.entry("3", "int", "constant")
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = var_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+
+        self.__release_print()
+
+    def test_var_statement_array_no_assign(self):
+        tokens_list = [
+            Token("var", "", 1),
+            Token("id", 1, 1),
+            Token("left_bracket", "", 1),
+            Token("number", 2, 1),
+            Token("right_bracket", "", 1),
+        ]
+        table = SymbolTable()
+        table.entry("a", "var", "variable")
+        table.entry("2", "int", "constant")
+
+        opcode, _, _ = var_statement(
+            tokens=tokens_list, i=1, table=table, func_ret_type={}
+        )
+        
+        self.assertEqual(opcode, OpCode('array_no_assign', 'a---2', None))
+
     def test_var_statement_ptr_assign(self):
         tokens_list = [
             Token("var", "", 1),
@@ -171,19 +207,6 @@ class TestVariableParser(unittest.TestCase):
 
         self.assertEqual(opcodes[0], OpCode("var_assign", "b---1", "int"))
 
-    def test_var_statement_var_no_assign(self):
-        tokens_list = [Token("var", "", 1), Token("id", 1, 1), Token("newline", "", 1)]
-        table = SymbolTable()
-        table.symbol_table = {
-            1: ["b", "var", "variable"],
-            2: ["1", "int", "constant"],
-            3: ["a", "var", "variable"],
-        }
-
-        opcodes = parse(tokens_list, table)
-
-        self.assertEqual(opcodes[0], OpCode("var_no_assign", "b", None))
-
     def test_var_statement_ptr_no_assign(self):
         tokens_list = [
             Token("var", "", 1),
@@ -202,7 +225,36 @@ class TestVariableParser(unittest.TestCase):
 
         self.assertEqual(opcodes[0], OpCode("ptr_no_assign", "b", None))
 
-    # TODO: Add tests to handle array_only_assign and related errors
+    def test_var_statement_var_no_assign(self):
+        tokens_list = [Token("var", "", 1), Token("id", 1, 1), Token("newline", "", 1)]
+        table = SymbolTable()
+        table.symbol_table = {
+            1: ["b", "var", "variable"],
+            2: ["1", "int", "constant"],
+            3: ["a", "var", "variable"],
+        }
+
+        opcodes = parse(tokens_list, table)
+
+        self.assertEqual(opcodes[0], OpCode("var_no_assign", "b", None))
+
+    def test_assign_statement_variable_used_before_declaration(self):
+        tokens_list = [
+            Token("id", 1, 1),
+            Token("assignment", "", 1),
+            Token("number", 2, 1),
+            Token("newline", "", 1),
+        ]
+        table = SymbolTable()
+        table.entry("a", "var", "variable")
+        table.entry("2", "int", "constant")
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = parse(tokens_list, table)
+
+        self.__release_print()
 
     def test_assign_statement_ptr_only_assign_no_error(self):
         tokens_list = [

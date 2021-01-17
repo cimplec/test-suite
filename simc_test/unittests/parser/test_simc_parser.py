@@ -41,6 +41,80 @@ class TestSimcParser(unittest.TestCase):
     ####################################################################################################
     # TESTS
     ####################################################################################################
+    def test_expression_index_out_bounds_array_indexing(self):
+        source_code = """
+        MAIN
+            var a[2] = {1, 2}
+            var b = a[10]
+        END_MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_expression_index_is_not_integer(self):
+        source_code = """
+        MAIN
+            var a[2] = {1, 2}
+            var b = a[3.14]
+        END_MAIN
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_expression_array_indexing(self):
+        source_code = """
+        MAIN
+            var a[2] = {1, 2}
+            var b = a[1]
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---a[1]', 'int'))
+
+    def test_expression_type_casting(self):
+        source_code = """
+        MAIN
+            var a[2] = {1, 2}
+            var b = int(3.14) + 2
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---(int)(3.14) + 2', 'int'))
+
+    def test_expression_size_operator(self):
+        source_code = """
+        MAIN
+            var a = 3.14
+            var b = size(a)
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---sizeof(a)', 'int'))
+
+    def test_expression_type_operator(self):
+        source_code = """
+        MAIN
+            var a = 3.14
+            var b = type(a)
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---"float"', 'string'))
+
     def test_expression_unknown_variable_error(self):
         tokens_list = [
             Token("var", "", 1),
@@ -893,7 +967,7 @@ class TestSimcParser(unittest.TestCase):
         MAIN
         """
 
-        # self.__suppress_print()
+        self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = self.__get_opcodes(source_code)

@@ -27,7 +27,7 @@ def unit_test():
         TestSymbolTable,
         TestTokenClass,
         TestSimc,
-        # TestCompiler,
+        TestCompiler,
         TestArrayParser,
         TestConditionalParser,
         TestFunctionParser,

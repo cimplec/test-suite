@@ -537,7 +537,7 @@ class TestSimcParser(unittest.TestCase):
 
         self.__release_print()
 
-    def test_parse_cannot_call_id_inside_struct_scope(self):
+    def test_parse_cannot_call_if_inside_struct_scope(self):
         source_code = """
         struct hello {
             if()
@@ -613,6 +613,32 @@ class TestSimcParser(unittest.TestCase):
         """
 
         self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_exit_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            exit(0)
+        }
+        """
+
+        # self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_exit_inside_global_scope(self):
+        source_code = """
+        exit(0)
+        """
+
+        # self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = self.__get_opcodes(source_code)

@@ -34,7 +34,7 @@ def unit_test():
         TestLoopParser,
         TestStructParser,
         TestVariableParser,
-        # TestSimcParser,
+        TestSimcParser,
     ]
 
     loader = unittest.TestLoader()

@@ -626,7 +626,7 @@ class TestSimcParser(unittest.TestCase):
         }
         """
 
-        # self.__suppress_print()
+        self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = self.__get_opcodes(source_code)
@@ -638,7 +638,33 @@ class TestSimcParser(unittest.TestCase):
         exit(0)
         """
 
-        # self.__suppress_print()
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_return_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            return 0
+        }
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_return_inside_global_scope(self):
+        source_code = """
+        return 0
+        """
+
+        self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = self.__get_opcodes(source_code)
@@ -671,23 +697,79 @@ class TestSimcParser(unittest.TestCase):
 
         self.assertEqual(opcodes[2], OpCode("return", "1 + 2", ""))
 
-    # def test_parse_break_opcode(self):
-    #     source_code = """
-    #     break
-    #     """
+    def test_parse_cannot_call_break_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            break
+        }
+        """
 
-    #     opcodes = self.__get_opcodes(source_code)
+        self.__suppress_print()
 
-    #     self.assertEqual(opcodes[0], OpCode("break", "", ""))
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
 
-    # def test_parse_continue_opcode(self):
-    #     source_code = """
-    #     continue
-    #     """
+        self.__release_print()
 
-    #     opcodes = self.__get_opcodes(source_code)
+    def test_parse_cannot_call_break_inside_global_scope(self):
+        source_code = """
+        break
+        """
 
-    #     self.assertEqual(opcodes[0], OpCode("continue", "", ""))
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_break_opcode(self):
+        source_code = """
+        MAIN
+            break
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[1], OpCode("break", "", ""))
+
+    def test_parse_cannot_call_continue_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            continue
+        }
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_continue_inside_global_scope(self):
+        source_code = """
+        continue
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_continue_opcode(self):
+        source_code = """
+        MAIN
+            continue
+        END_MAIN
+        """
+
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[1], OpCode("continue", "", ""))
 
     def test_parse_single_line_comment_opcode(self):
         source_code = """
@@ -718,6 +800,58 @@ class TestSimcParser(unittest.TestCase):
             ),
         )
 
+    def test_parse_cannot_call_switch_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            switch
+        }
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_switch_inside_global_scope(self):
+        source_code = """
+        switch
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_default_inside_struct_scope(self):
+        source_code = """
+        struct hello {
+            default
+        }
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_cannot_call_default_inside_global_scope(self):
+        source_code = """
+        default
+        """
+
+        self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
     def test_parse_missing_colon_after_default_error(self):
         source_code = """
         default print
@@ -730,33 +864,36 @@ class TestSimcParser(unittest.TestCase):
 
         self.__release_print()
 
-    # def test_parse_default_opcode(self):
-    #     source_code = """
-    #     default:
-    #     """
-
-    #     opcodes = self.__get_opcodes(source_code)
-
-    #     self.assertEqual(opcodes[0], OpCode("default", "", ""))
-
-    # def test_parse_no_matching_end_main_for_main_error(self):
-    #     source_code = """
-    #     MAIN
-    #     """
-
-    #     self.__suppress_print()
-
-    #     with self.assertRaises(SystemExit):
-    #         _ = self.__get_opcodes(source_code)
-
-    #     self.__release_print()
-
-    def test_parse_no_matching_main_for_end_main_error(self):
+    def test_parse_default_opcode(self):
         source_code = """
+        MAIN
+            default:
         END_MAIN
         """
 
+        opcodes = self.__get_opcodes(source_code)
+
+        self.assertEqual(opcodes[1], OpCode("default", "", ""))
+
+    def test_parse_more_than_one_main_error(self):
+        source_code = """
+        MAIN
+        MAIN
+        """
+
         self.__suppress_print()
+
+        with self.assertRaises(SystemExit):
+            _ = self.__get_opcodes(source_code)
+
+        self.__release_print()
+
+    def test_parse_no_matching_end_main_for_main_error(self):
+        source_code = """
+        MAIN
+        """
+
+        # self.__suppress_print()
 
         with self.assertRaises(SystemExit):
             _ = self.__get_opcodes(source_code)

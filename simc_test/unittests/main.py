@@ -17,8 +17,14 @@ from .parser.test_struct_parser import TestStructParser
 from .parser.test_variable_parser import TestVariableParser
 from .parser.test_simc_parser import TestSimcParser
 
+from simc_test.helpers import make_dir, remove_dir
+
 
 def unit_test():
+    test_dir_path = ".simc-test-suite"
+    make_dir(test_dir_path)
+    os.chdir(test_dir_path)
+
     # List of test classes to run
     test_classes_to_run = [
         TestGlobalHelpers,
@@ -52,6 +58,5 @@ def unit_test():
     runner = unittest.TextTestRunner()
     results = runner.run(big_suite)
 
-    # Remove any simc scripts created for testing
-    _ = subprocess.getoutput("rm *.simc")
-    _ = subprocess.getoutput("rm *.c")
+    os.chdir("../")
+    remove_dir(test_dir_path)

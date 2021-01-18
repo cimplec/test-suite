@@ -5,7 +5,7 @@
 1) Install simC test suite:-
 
 ```bash
-user@programmer~$: pip install git+https://github.com/cimplec/sim-c
+user@programmer~$: pip install git+https://github.com/cimplec/test-suite
 ```
 
 2) Run tests:-

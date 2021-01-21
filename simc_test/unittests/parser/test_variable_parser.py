@@ -282,8 +282,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant'], 5: ['10', 'int', 'constant'], 6: ['0', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'var', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', ''], 5: ['10', 'int', 'constant', ''], 6: ['0', 'int', 'constant', '']}
 
         self.__suppress_print()
 
@@ -318,8 +318,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant'], 5: ['10', 'float', 'constant'], 6: ['0', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'var', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', ''], 5: ['10', 'float', 'constant', ''], 6: ['0', 'int', 'constant', '']}
 
         self.__suppress_print()
 
@@ -347,8 +347,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'arr_declared', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'arr_declared', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', '']}
 
         self.__suppress_print()
 
@@ -376,8 +376,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'arr_declared', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'arr_declared', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', '']}
 
         self.__suppress_print()
 
@@ -405,8 +405,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'arr_declared', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'arr_declared', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', '']}
 
         self.__suppress_print()
 
@@ -436,8 +436,8 @@ class TestVariableParser(unittest.TestCase):
             Token('END_MAIN', '', 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'arr_declared', 'variable'], 2: ['2', 'int', 'constant'], 3: ['1', 'int', 'constant'], 
-                              4: ['2', 'int', 'constant']}
+        table.symbol_table = {1: ['a', 'arr_declared', 'variable', ''], 2: ['2', 'int', 'constant', ''], 3: ['1', 'int', 'constant', ''], 
+                              4: ['2', 'int', 'constant', '']}
 
         opcodes = parse(tokens_list, table)
         

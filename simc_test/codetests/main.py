@@ -2,23 +2,17 @@ import subprocess
 from tqdm import tqdm
 import os
 import glob
-import shutil
 
+from simc_test.helpers import make_dir, remove_dir
 
 def get_simc_codes():
-    remove_simc_repo()
     _ = subprocess.getoutput("git clone https://github.com/cimplec/sim-c")
 
-
-def remove_simc_repo():
-    if os.path.exists("sim-c"):
-        try:
-            shutil.rmtree("sim-c")
-        except:
-            _ = subprocess.getoutput('rd /s /q "sim-c"')
-
-
 def run_simc_codes():
+    test_dir_path = ".simc-test-suite"
+    make_dir(test_dir_path)
+    os.chdir(test_dir_path)
+
     get_simc_codes()
     os.chdir("sim-c/simc-codes")
 
@@ -45,5 +39,5 @@ def run_simc_codes():
     # Set the terminal to default colors
     print(" \033[m", end='')
 
-    os.chdir("../../")
-    remove_simc_repo()
+    os.chdir("../../../")
+    remove_dir(".simc-test-suite")

@@ -35,6 +35,9 @@ def run_simc_codes():
         print(f"\033[1;37;0mThe list of files that failed to pass test are:-")
         for file, error_msg in wrong.items():
             print(f"\033[1;37;0m{file} - {error_msg}")
+    
+    # Set the terminal to default colors
+    print(" \033[m", end='')
 
     os.chdir("../../../")
     remove_dir(".simc-test-suite")

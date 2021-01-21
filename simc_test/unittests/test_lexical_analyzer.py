@@ -200,7 +200,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["314", "int", "constant"],
+            ["314", "int", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
@@ -214,7 +214,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__numeric_val()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["3.14", "float", "constant"],
+            ["3.14", "float", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
@@ -228,7 +228,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__numeric_val()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["3.14159265", "double", "constant"],
+            ["3.14159265", "double", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
@@ -255,7 +255,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__string_val()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ['"hello world"', "string", "constant"],
+            ['"hello world"', "string", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
@@ -269,7 +269,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ['"hello world"', "string", "constant"],
+            ['"hello world"', "string", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
@@ -283,7 +283,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__string_val()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["'h'", "char", "constant"],
+            ["'h'", "char", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
@@ -297,7 +297,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["'h'", "char", "constant"],
+            ["'h'", "char", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
@@ -323,7 +323,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ['"hello\\n"', 'string', 'constant'],
+            ['"hello\\n"', 'string', 'constant', ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
 
@@ -338,7 +338,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["true", "bool", "constant"],
+            ["true", "bool", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("bool", 1, 0))
 
@@ -352,7 +352,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["PI", "double", "constant"],
+            ["PI", "double", "constant", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("number", 1, 0))
 
@@ -376,7 +376,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ["variable", "var", "variable"],
+            ["variable", "var", "variable", ''],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("id", 1, 0))
 

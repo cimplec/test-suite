@@ -80,7 +80,7 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---a[1]', 'int'))
+        self.assertEqual(opcodes[-2], OpCode("var_assign", "b---a[1]", "int"))
 
     def test_expression_type_casting(self):
         source_code = """
@@ -91,7 +91,9 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---(int)(3.14) + 2', 'int'))
+        self.assertEqual(
+            opcodes[-2], OpCode("var_assign", "b---(int)(3.14) + 2", "int")
+        )
 
     def test_expression_size_operator(self):
         source_code = """
@@ -102,7 +104,7 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---sizeof(a)', 'int'))
+        self.assertEqual(opcodes[-2], OpCode("var_assign", "b---sizeof(a)", "int"))
 
     def test_expression_type_operator(self):
         source_code = """
@@ -113,7 +115,7 @@ class TestSimcParser(unittest.TestCase):
         """
 
         opcodes = self.__get_opcodes(source_code)
-        self.assertEqual(opcodes[-2], OpCode('var_assign', 'b---"float"', 'string'))
+        self.assertEqual(opcodes[-2], OpCode("var_assign", 'b---"float"', "string"))
 
     def test_expression_unknown_variable_error(self):
         tokens_list = [
@@ -204,7 +206,10 @@ class TestSimcParser(unittest.TestCase):
             Token("newline", "", 2),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ["a", "var", "variable", "", ""], 2: ["1", "int", "constant", "", ""]}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["1", "int", "constant", "", ""],
+        }
 
         opcodes = parse(tokens=tokens_list, table=table)
 
@@ -222,7 +227,10 @@ class TestSimcParser(unittest.TestCase):
             Token("newline", "", 2),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ["a", "var", "variable", "", ""], 2: ["1", "int", "constant", "", ""]}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["1", "int", "constant", "", ""],
+        }
 
         opcodes = parse(tokens=tokens_list, table=table)
 
@@ -433,10 +441,10 @@ class TestSimcParser(unittest.TestCase):
             hello h
         END_MAIN
         """
-        
+
         opcodes = self.__get_opcodes(source_code)
-        
-        self.assertEqual(opcodes[-2], OpCode('struct_instantiate', 'hello---h', None))
+
+        self.assertEqual(opcodes[-2], OpCode("struct_instantiate", "hello---h", None))
 
     def test_parse_cannot_define_function_inside_struct_scope(self):
         source_code = """

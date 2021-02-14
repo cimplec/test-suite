@@ -160,8 +160,8 @@ class TestVariableParser(unittest.TestCase):
         opcode, _, _ = var_statement(
             tokens=tokens_list, i=1, table=table, func_ret_type={}
         )
-        
-        self.assertEqual(opcode, OpCode('array_no_assign', 'a---2', None))
+
+        self.assertEqual(opcode, OpCode("array_no_assign", "a---2", None))
 
     def test_var_statement_ptr_assign(self):
         tokens_list = [
@@ -258,33 +258,38 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_array_index_out_of_bounds(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('assignment', '', 2),
-            Token('left_brace', '', 2),
-            Token('number', 3, 2),
-            Token('comma', '', 2),
-            Token('number', 4, 2),
-            Token('right_brace', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('left_bracket', '', 3),
-            Token('number', 5, 3),
-            Token('right_bracket', '', 3),
-            Token('assignment', '', 3),
-            Token('number', 6, 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("assignment", "", 2),
+            Token("left_brace", "", 2),
+            Token("number", 3, 2),
+            Token("comma", "", 2),
+            Token("number", 4, 2),
+            Token("right_brace", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("left_bracket", "", 3),
+            Token("number", 5, 3),
+            Token("right_bracket", "", 3),
+            Token("assignment", "", 3),
+            Token("number", 6, 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', ''], 
-                              5: ['10', 'int', 'constant', '', ''], 6: ['0', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+            5: ["10", "int", "constant", "", ""],
+            6: ["0", "int", "constant", "", ""],
+        }
 
         self.__suppress_print()
 
@@ -295,33 +300,38 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_expected_integer_or_expression_as_index(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('assignment', '', 2),
-            Token('left_brace', '', 2),
-            Token('number', 3, 2),
-            Token('comma', '', 2),
-            Token('number', 4, 2),
-            Token('right_brace', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('left_bracket', '', 3),
-            Token('number', 5, 3),
-            Token('right_bracket', '', 3),
-            Token('assignment', '', 3),
-            Token('number', 6, 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("assignment", "", 2),
+            Token("left_brace", "", 2),
+            Token("number", 3, 2),
+            Token("comma", "", 2),
+            Token("number", 4, 2),
+            Token("right_brace", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("left_bracket", "", 3),
+            Token("number", 5, 3),
+            Token("right_bracket", "", 3),
+            Token("assignment", "", 3),
+            Token("number", 6, 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', ''], 
-                              5: ['10', 'float', 'constant', '', ''], 6: ['0', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+            5: ["10", "float", "constant", "", ""],
+            6: ["0", "int", "constant", "", ""],
+        }
 
         self.__suppress_print()
 
@@ -332,25 +342,29 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_general_expected_assignment_after_identifier(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('plus', '', 3),
-            Token('number', 3, 3),
-            Token('plus', '', 3),
-            Token('number', 4, 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("plus", "", 3),
+            Token("number", 3, 3),
+            Token("plus", "", 3),
+            Token("number", 4, 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'arr_declared', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "arr_declared", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+        }
 
         self.__suppress_print()
 
@@ -361,26 +375,31 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_array_assignment_requires_initializer_list(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('assignment', '', 3),
-            Token('number', 3, 3),
-            Token('plus', '', 3),
-            Token('number', 4, 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("assignment", "", 3),
+            Token("number", 3, 3),
+            Token("plus", "", 3),
+            Token("number", 4, 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', ''], 
-                              5: ['1', 'int', 'constant', '', ''], 6: ['2', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+            5: ["1", "int", "constant", "", ""],
+            6: ["2", "int", "constant", "", ""],
+        }
 
         self.__suppress_print()
 
@@ -391,25 +410,29 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_array_only_assign_error(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('assignment', '', 3),
-            Token('number', 3, 3),
-            Token('plus', '', 3),
-            Token('number', 4, 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("assignment", "", 3),
+            Token("number", 3, 3),
+            Token("plus", "", 3),
+            Token("number", 4, 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+        }
 
         self.__suppress_print()
 
@@ -420,31 +443,37 @@ class TestVariableParser(unittest.TestCase):
 
     def test_assign_statement_array_only_assign_no_error(self):
         tokens_list = [
-            Token('MAIN', '', 1),
-            Token('newline', '', 1),
-            Token('var', '', 2),
-            Token('id', 1, 2),
-            Token('left_bracket', '', 2),
-            Token('number', 2, 2),
-            Token('right_bracket', '', 2),
-            Token('newline', '', 2),
-            Token('id', 1, 3),
-            Token('assignment', '', 3),
-            Token('left_brace', '', 3),
-            Token('number', 3, 3),
-            Token('plus', '', 3),
-            Token('number', 4, 3),
-            Token('right_brace', '', 3),
-            Token('newline', '', 3),
-            Token('END_MAIN', '', 4),
+            Token("MAIN", "", 1),
+            Token("newline", "", 1),
+            Token("var", "", 2),
+            Token("id", 1, 2),
+            Token("left_bracket", "", 2),
+            Token("number", 2, 2),
+            Token("right_bracket", "", 2),
+            Token("newline", "", 2),
+            Token("id", 1, 3),
+            Token("assignment", "", 3),
+            Token("left_brace", "", 3),
+            Token("number", 3, 3),
+            Token("plus", "", 3),
+            Token("number", 4, 3),
+            Token("right_brace", "", 3),
+            Token("newline", "", 3),
+            Token("END_MAIN", "", 4),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ['a', 'var', 'variable', '', ''], 2: ['2', 'int', 'constant', '', ''], 
-                              3: ['1', 'int', 'constant', '', ''], 4: ['2', 'int', 'constant', '', '']}
+        table.symbol_table = {
+            1: ["a", "var", "variable", "", ""],
+            2: ["2", "int", "constant", "", ""],
+            3: ["1", "int", "constant", "", ""],
+            4: ["2", "int", "constant", "", ""],
+        }
 
         opcodes = parse(tokens_list, table)
-        
-        self.assertEqual(opcodes[2], OpCode('array_only_assign', 'a--- = (int [2]){1 + 2}', ''))
+
+        self.assertEqual(
+            opcodes[2], OpCode("array_only_assign", "a--- = (int [2]){1 + 2}", "")
+        )
 
     def test_assign_statement_ptr_only_assign_no_error(self):
         tokens_list = [
@@ -489,7 +518,10 @@ class TestVariableParser(unittest.TestCase):
             Token("newline", "", 2),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ["b", "var", "variable", "", ""], 2: ["1", "int", "constant", "", ""]}
+        table.symbol_table = {
+            1: ["b", "var", "variable", "", ""],
+            2: ["1", "int", "constant", "", ""],
+        }
 
         opcodes = parse(tokens_list, table)
 

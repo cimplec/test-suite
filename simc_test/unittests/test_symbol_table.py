@@ -14,7 +14,9 @@ class TestSymbolTable(unittest.TestCase):
         id = symbol_table.entry(value="my_var", type="int", typedata="variable")
 
         self.assertEqual(id, 1)
-        self.assertEqual(symbol_table.symbol_table, {1: ["my_var", "int", "variable", "", ""]})
+        self.assertEqual(
+            symbol_table.symbol_table, {1: ["my_var", "int", "variable", "", ""]}
+        )
 
     def test_get_by_id_is_present(self):
         symbol_table = SymbolTable()

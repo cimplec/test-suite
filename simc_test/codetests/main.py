@@ -5,8 +5,10 @@ import glob
 
 from simc_test.helpers import make_dir, remove_dir
 
+
 def get_simc_codes():
     _ = subprocess.getoutput("git clone https://github.com/cimplec/sim-c")
+
 
 def run_simc_codes():
     test_dir_path = ".simc-test-suite"
@@ -35,9 +37,9 @@ def run_simc_codes():
         print(f"\033[1;37;0mThe list of files that failed to pass test are:-")
         for file, error_msg in wrong.items():
             print(f"\033[1;37;0m{file} - {error_msg}")
-    
+
     # Set the terminal to default colors
-    print("\033[m", end='')
+    print("\033[m", end="")
 
     os.chdir("../../../")
     remove_dir(".simc-test-suite")

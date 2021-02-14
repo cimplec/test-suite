@@ -316,17 +316,16 @@ class TestLexicalAnalyzer(unittest.TestCase):
 
     def test___string_val_escape_sequence(self):
         self.__setup(source_code="")
-        
+
         self.lexical_analyzer.source_code = "'hello\\n'\0"
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__string_val(start_char="'")
         self.assertEqual(
             self.lexical_analyzer.symbol_table.symbol_table[1],
-            ['"hello\\n"', 'string', 'constant', '', ''],
+            ['"hello\\n"', "string", "constant", "", ""],
         )
         self.assertEqual(self.lexical_analyzer.tokens[-1], Token("string", 1, 0))
-
 
     def test___keyword_identifier_bool_constant(self):
         self.__setup(source_code="")
@@ -400,7 +399,7 @@ class TestLexicalAnalyzer(unittest.TestCase):
         self.lexical_analyzer.tokens = []
 
         self.lexical_analyzer._LexicalAnalyzer__keyword_identifier()
-        self.assertEqual(self.lexical_analyzer.tokens[-1], Token('type_cast', 'int', 0))
+        self.assertEqual(self.lexical_analyzer.tokens[-1], Token("type_cast", "int", 0))
 
     def test___get_raw_tokens_with_raw_c_code(self):
         raw_c_source_code = """

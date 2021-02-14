@@ -43,21 +43,32 @@ class TestCompiler(unittest.TestCase):
     # TESTS
     ####################################################################################################
     def test_check_include(self):
-        opcodes = [OpCode('print', '"Hello"', None), OpCode('var_assign', 'a---true', 'bool'),
-                   OpCode('var_assign', 'b---M_PI', 'double')]
+        opcodes = [
+            OpCode("print", '"Hello"', None),
+            OpCode("var_assign", "a---true", "bool"),
+            OpCode("var_assign", "b---M_PI", "double"),
+        ]
 
         includes = set(check_include(opcodes).split("\n"))
-        should_be_includes = set(["#include <stdio.h>", "#include <stdbool.h>", "#include <math.h>"])
-        
+        should_be_includes = set(
+            ["#include <stdio.h>", "#include <stdbool.h>", "#include <math.h>"]
+        )
+
         self.assertEqual(includes, should_be_includes)
 
     def test_check_include_empty(self):
-        opcodes = [OpCode('func_decl', 'hello---', ''), OpCode('scope_begin', '', ''), OpCode('return', '1', ''),
-                   OpCode('scope_over', '', ''), OpCode('MAIN', '', ''), OpCode('var_assign', 'a---hello()', 'int'),
-                   OpCode('END_MAIN', '', '')]
+        opcodes = [
+            OpCode("func_decl", "hello---", ""),
+            OpCode("scope_begin", "", ""),
+            OpCode("return", "1", ""),
+            OpCode("scope_over", "", ""),
+            OpCode("MAIN", "", ""),
+            OpCode("var_assign", "a---hello()", "int"),
+            OpCode("END_MAIN", "", ""),
+        ]
 
         includes = set(check_include(opcodes).split("\n"))
-        should_be_includes = set([''])
+        should_be_includes = set([""])
 
         self.assertEqual(includes, should_be_includes)
 
@@ -67,7 +78,9 @@ class TestCompiler(unittest.TestCase):
         outside_main = True
         code = "printf('Hello World')"
 
-        outside_code, ccode = compile_func_main_code(outside_code, ccode, outside_main, code)
+        outside_code, ccode = compile_func_main_code(
+            outside_code, ccode, outside_main, code
+        )
 
         self.assertEqual(outside_code, code)
         self.assertEqual(ccode, "")
@@ -78,7 +91,9 @@ class TestCompiler(unittest.TestCase):
         outside_main = False
         code = "printf('Hello World')"
 
-        outside_code, ccode = compile_func_main_code(outside_code, ccode, outside_main, code)
+        outside_code, ccode = compile_func_main_code(
+            outside_code, ccode, outside_main, code
+        )
 
         self.assertEqual(outside_code, "")
         self.assertEqual(ccode, code)
@@ -89,7 +104,9 @@ class TestCompiler(unittest.TestCase):
         outside_main = False
         code = "}\n"
 
-        outside_code, ccode = compile_func_main_code(outside_code, ccode, outside_main, code)
+        outside_code, ccode = compile_func_main_code(
+            outside_code, ccode, outside_main, code
+        )
 
         self.assertEqual(outside_code, "")
         self.assertEqual(ccode, "\t" + code)
@@ -102,7 +119,7 @@ class TestCompiler(unittest.TestCase):
         c_source_code = '#include <stdio.h>\n\tprintf("Hello World");\n'
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_print_statement_string_var(self):
@@ -111,10 +128,12 @@ class TestCompiler(unittest.TestCase):
         print(a)
         """
 
-        c_source_code = '#include <stdio.h>\n\tchar* a = "Hello World";\n\tprintf("%s", a);\n'
+        c_source_code = (
+            '#include <stdio.h>\n\tchar* a = "Hello World";\n\tprintf("%s", a);\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_import_statement(self):
@@ -133,7 +152,7 @@ class TestCompiler(unittest.TestCase):
             c_compiled_code = self.__compile(source_code)
 
         self.__release_print()
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_var_assign_statement_without_input(self):
@@ -141,10 +160,10 @@ class TestCompiler(unittest.TestCase):
         var a = 1
         """
 
-        c_source_code = '\n\tint a = 1;\n'
+        c_source_code = "\n\tint a = 1;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_var_assign_statement_with_input(self):
@@ -152,7 +171,10 @@ class TestCompiler(unittest.TestCase):
         var a = input("Enter an integer:", "i")
         """
 
-        c_source_code = '#include <stdio.h>\n\tint a;\n\tprintf("Enter an integer:");\n\tscanf("%d", &a);\n'
+        c_source_code = (
+            '#include <stdio.h>\n\tint a;\n\tprintf("Enter an'
+            ' integer:");\n\tscanf("%d", &a);\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
 
@@ -163,10 +185,10 @@ class TestCompiler(unittest.TestCase):
         var *a = 1
         """
 
-        c_source_code = '#include <stdio.h>\n\tint *a = 1;\n'
+        c_source_code = "#include <stdio.h>\n\tint *a = 1;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_var_no_assign_statement(self):
@@ -174,10 +196,10 @@ class TestCompiler(unittest.TestCase):
         var a
         """
 
-        c_source_code = '\n\tdeclared a;\n'
+        c_source_code = "\n\tdeclared a;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_array_no_assign_statement(self):
@@ -185,10 +207,10 @@ class TestCompiler(unittest.TestCase):
         var a[2]
         """
 
-        c_source_code = '\n\tarr_declared *a;\n'
+        c_source_code = "\n\tarr_declared *a;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_array_assign_statement(self):
@@ -196,10 +218,10 @@ class TestCompiler(unittest.TestCase):
         var a[2] = {1, 2}
         """
 
-        c_source_code = '#include <stdio.h>\n\tint a[2] = {1,2};\n'
+        c_source_code = "#include <stdio.h>\n\tint a[2] = {1,2};\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_array_only_assign_statement(self):
@@ -208,10 +230,10 @@ class TestCompiler(unittest.TestCase):
         a = {1, 2}
         """
 
-        c_source_code = '\n\tint *a;\n\ta = (int [2]){1,2};\n'
+        c_source_code = "\n\tint *a;\n\ta = (int [2]){1,2};\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_ptr_no_assign_statement(self):
@@ -219,10 +241,10 @@ class TestCompiler(unittest.TestCase):
         var *a
         """
 
-        c_source_code = '\n\tdeclared *a;\n'
+        c_source_code = "\n\tdeclared *a;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_assign_statement_without_input(self):
@@ -231,10 +253,10 @@ class TestCompiler(unittest.TestCase):
         a = 1
         """
 
-        c_source_code = '#include <stdio.h>\n\tint a;\n\ta = 1;\n'
+        c_source_code = "#include <stdio.h>\n\tint a;\n\ta = 1;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_assign_statement_with_input(self):
@@ -243,10 +265,13 @@ class TestCompiler(unittest.TestCase):
         a = input("Enter something:", "f")
         """
 
-        c_source_code = '#include <stdio.h>\n\tfloat a;\n\tprintf("Enter something:");\n\tscanf("%f", &a);\n'
+        c_source_code = (
+            '#include <stdio.h>\n\tfloat a;\n\tprintf("Enter'
+            ' something:");\n\tscanf("%f", &a);\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_ptr_only_assign_statement(self):
@@ -256,10 +281,12 @@ class TestCompiler(unittest.TestCase):
         *ptr = 2
         """
 
-        c_source_code = '#include <stdio.h>\n\tint a = 1;\n\tint *ptr =  & a;\n\t*ptr = 2;\n'
+        c_source_code = (
+            "#include <stdio.h>\n\tint a = 1;\n\tint *ptr =  & a;\n\t*ptr = 2;\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_unary_statement(self):
@@ -268,10 +295,10 @@ class TestCompiler(unittest.TestCase):
         ++a
         """
 
-        c_source_code = '\n\tint a = 1;\n\t++a;\n'
+        c_source_code = "\n\tint a = 1;\n\t++a;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_func_decl_statement_with_params(self):
@@ -284,10 +311,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint sum(int a, int b) \t{\n\n\treturn a + b;\n}\n\nint main() {\n\tint value = sum(1, 2);\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "\n\nint sum(int a, int b) \t{\n\n\treturn a + b;\n}\n\nint main() {\n\tint"
+            " value = sum(1, 2);\n\n\treturn 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_func_decl_statement_without_params(self):
@@ -300,10 +330,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint sum(void) \t{\n\n\treturn 1 + 2;\n}\n\nint main() {\n\tint value = sum();\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "\n\nint sum(void) \t{\n\n\treturn 1 + 2;\n}\n\nint main() {\n\tint value ="
+            " sum();\n\n\treturn 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_func_call_statement_with_params(self):
@@ -316,10 +349,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint hello(int a) \t{\n\n\treturn a;\n}\n\nint main() {\n\tint a = hello(1);\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "\n\nint hello(int a) \t{\n\n\treturn a;\n}\n\nint main() {\n\tint a ="
+            " hello(1);\n\n\treturn 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_func_call_statement_without_params(self):
@@ -332,10 +368,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello");\n}\n\nint main() {\n\thello();\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello");\n}\n\nint'
+            " main() {\n\thello();\n\n\treturn 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_struct_decl_statement(self):
@@ -345,10 +384,10 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n'
+        c_source_code = "\n\nstruct hello \t{\n\tint a = 1;\n} ;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_struct_instantiate_statement(self):
@@ -362,10 +401,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n\nint main() {\n\tstruct hello h;\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "\n\nstruct hello \t{\n\tint a = 1;\n} ;\n\nint main() {\n\tstruct hello"
+            " h;\n\n\treturn 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_scope_begin_scope_over_statements(self):
@@ -375,10 +417,12 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello World");\n}\n'
+        c_source_code = (
+            '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello World");\n}\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_struct_decl_struct_scope_over_statements(self):
@@ -388,10 +432,10 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n'
+        c_source_code = "\n\nstruct hello \t{\n\tint a = 1;\n} ;\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_main_end_main_statements(self):
@@ -400,10 +444,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint main() {\n\n\treturn 0;\n}\n'
+        c_source_code = "\n\nint main() {\n\n\treturn 0;\n}\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_for_statement(self):
@@ -411,10 +455,10 @@ class TestCompiler(unittest.TestCase):
         for i in 1 to 10 by +1
         """
 
-        c_source_code = '\n\tfor(int i = 1; i < 10; i+=1) '
+        c_source_code = "\n\tfor(int i = 1; i < 10; i+=1) "
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_while_statement(self):
@@ -426,7 +470,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\twhile(1) \t{\n\tprintf("Hello");\n\t}\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "#include <stdio.h>\n\nint main() {\n\twhile(1)"
+            ' \t{\n\tprintf("Hello");\n\t}\n\n\treturn 0;\n}\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
 
@@ -442,10 +489,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\tdo \t{\n\tprintf("Hello");\n\t}\n\twhile(1 == 2);\n\treturn 0;\n}\n'
+        c_source_code = (
+            "#include <stdio.h>\n\nint main() {\n\tdo"
+            ' \t{\n\tprintf("Hello");\n\t}\n\twhile(1 == 2);\n\treturn 0;\n}\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_if_else_if_else_statements(self):
@@ -460,10 +510,13 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\tif(1) \tprintf("Hello");\n\telse if(2) \tprintf("Bye");\n\telse \tprintf("World");\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            '#include <stdio.h>\n\nint main() {\n\tif(1) \tprintf("Hello");\n\telse'
+            ' if(2) \tprintf("Bye");\n\telse \tprintf("World");\n\n\treturn 0;\n}\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_exit_statement(self):
@@ -473,10 +526,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint main() {\n\texit(0);\n\n\treturn 0;\n}\n'
+        c_source_code = "\n\nint main() {\n\texit(0);\n\n\treturn 0;\n}\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_return_statement(self):
@@ -486,10 +539,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint main() {\n\n\treturn 1;\n\n}\n'
+        c_source_code = "\n\nint main() {\n\n\treturn 1;\n\n}\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_break_statement(self):
@@ -499,10 +552,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint main() {\n\tbreak;\n\n\treturn 0;\n}\n'
+        c_source_code = "\n\nint main() {\n\tbreak;\n\n\treturn 0;\n}\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_continue_statement(self):
@@ -512,10 +565,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint main() {\n\tcontinue;\n\n\treturn 0;\n}\n'
+        c_source_code = "\n\nint main() {\n\tcontinue;\n\n\treturn 0;\n}\n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_single_line_comment_statement(self):
@@ -523,10 +576,10 @@ class TestCompiler(unittest.TestCase):
         // This is a single line comment
         """
 
-        c_source_code = '\n\t//  This is a single line comment \n'
+        c_source_code = "\n\t//  This is a single line comment \n"
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_multi_line_comment_statement(self):
@@ -535,10 +588,13 @@ class TestCompiler(unittest.TestCase):
         And it spans multiple lines */
         """
 
-        c_source_code = '\n/*  This is a multi-line comment\n        And it spans multiple lines */\n'
+        c_source_code = (
+            "\n/*  This is a multi-line comment\n        And it spans multiple lines"
+            " */\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_switch_case_default_statements(self):
@@ -557,10 +613,14 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\tswitch(1) \t{\n\tcase 1:\n\t{\n\tprintf("Hello");\n\tbreak;\n\t}\n\tdefault:\n\t{\n\tprintf("World");\n\tbreak;\n\t}\n\t}\n\n\treturn 0;\n}\n'
+        c_source_code = (
+            "#include <stdio.h>\n\nint main() {\n\tswitch(1) \t{\n\tcase"
+            ' 1:\n\t{\n\tprintf("Hello");\n\tbreak;\n\t}\n\tdefault:\n\t{\n\tprintf("World");\n\tbreak;\n\t}\n\t}\n\n\treturn'
+            " 0;\n}\n"
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_raw_c_statements(self):
@@ -572,8 +632,11 @@ class TestCompiler(unittest.TestCase):
         print("Hello")
         """
 
-        c_source_code = '#include <stdio.h>\n\n            int a = 1;\n            printf("%d", a);\n\tprintf("Hello");\n'
+        c_source_code = (
+            '#include <stdio.h>\n\n            int a = 1;\n            printf("%d",'
+            ' a);\n\tprintf("Hello");\n'
+        )
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)

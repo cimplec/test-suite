@@ -27,10 +27,10 @@ class TestSimc(unittest.TestCase):
         output = subprocess.getoutput("simc test-simc.simc token").split("\n")
 
         compare_list = [
-            "Token('print', '', '1')",
-            "Token('left_paren', '', '1')",
-            "Token('string', '1', '1')",
-            "Token('right_paren', '', '1')",
+            "Token(print, , 1)",
+            "Token(left_paren, , 1)",
+            "Token(string, 1, 1)",
+            "Token(right_paren, , 1)",
             "\x1b[92mC code generated at test-simc.c! \x1b[m",
         ]
 

@@ -131,9 +131,9 @@ class TestSimcParser(unittest.TestCase):
         ]
         table = SymbolTable()
         table.symbol_table = {
-            1: ["a", "var", "variable", ""],
-            2: ["1", "int", "constant", ""],
-            3: ['"value = {a}"', "string", "constant", ""],
+            1: ["a", "var", "variable", "", ""],
+            2: ["1", "int", "constant", "", ""],
+            3: ['"value = {a}"', "string", "constant", "", ""],
         }
 
         self.__suppress_print()
@@ -204,7 +204,7 @@ class TestSimcParser(unittest.TestCase):
             Token("newline", "", 2),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ["a", "var", "variable", ""], 2: ["1", "int", "constant", ""]}
+        table.symbol_table = {1: ["a", "var", "variable", "", ""], 2: ["1", "int", "constant", "", ""]}
 
         opcodes = parse(tokens=tokens_list, table=table)
 
@@ -222,7 +222,7 @@ class TestSimcParser(unittest.TestCase):
             Token("newline", "", 2),
         ]
         table = SymbolTable()
-        table.symbol_table = {1: ["a", "var", "variable", ""], 2: ["1", "int", "constant", ""]}
+        table.symbol_table = {1: ["a", "var", "variable", "", ""], 2: ["1", "int", "constant", "", ""]}
 
         opcodes = parse(tokens=tokens_list, table=table)
 

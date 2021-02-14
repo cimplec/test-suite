@@ -284,7 +284,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint sum(int a, int b) {\n\n\treturn a + b;\n}\n\nint main() {\n\tint value = sum(1, 2);\n\n\treturn 0;\n}\n'
+        c_source_code = '\n\nint sum(int a, int b) \t{\n\n\treturn a + b;\n}\n\nint main() {\n\tint value = sum(1, 2);\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -300,7 +300,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint sum(void) {\n\n\treturn 1 + 2;\n}\n\nint main() {\n\tint value = sum();\n\n\treturn 0;\n}\n'
+        c_source_code = '\n\nint sum(void) \t{\n\n\treturn 1 + 2;\n}\n\nint main() {\n\tint value = sum();\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -316,7 +316,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nint hello(int a) {\n\n\treturn a;\n}\n\nint main() {\n\tint a = hello(1);\n\n\treturn 0;\n}\n'
+        c_source_code = '\n\nint hello(int a) \t{\n\n\treturn a;\n}\n\nint main() {\n\tint a = hello(1);\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -332,7 +332,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nvoid hello(void) {\n\tprintf("Hello");\n}\n\nint main() {\n\thello();\n\n\treturn 0;\n}\n'
+        c_source_code = '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello");\n}\n\nint main() {\n\thello();\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -345,7 +345,7 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '\n\nstruct hello {\n\tint a = 1;\n} ;\n'
+        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -362,7 +362,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '\n\nstruct hello {\n\tint a = 1;\n} ;\n\nint main() {\n\tstruct hello h;\n\n\treturn 0;\n}\n'
+        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n\nint main() {\n\tstruct hello h;\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -375,7 +375,7 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '#include <stdio.h>\n\nvoid hello(void) {\n\tprintf("Hello World");\n}\n'
+        c_source_code = '#include <stdio.h>\n\nvoid hello(void) \t{\n\tprintf("Hello World");\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -388,7 +388,7 @@ class TestCompiler(unittest.TestCase):
         }
         """
 
-        c_source_code = '\n\nstruct hello {\n\tint a = 1;\n} ;\n'
+        c_source_code = '\n\nstruct hello \t{\n\tint a = 1;\n} ;\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -426,10 +426,10 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\twhile(1) {\n\tprintf("Hello");\n\t}\n\n\treturn 0;\n}\n'
+        c_source_code = '#include <stdio.h>\n\nint main() {\n\twhile(1) \t{\n\tprintf("Hello");\n\t}\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
-        
+
         self.assertEqual(c_source_code, c_compiled_code)
 
     def test_compile_do_while_do_statements(self):
@@ -442,7 +442,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\tdo {\n\tprintf("Hello");\n\t}\n\twhile(1 == 2);\n\treturn 0;\n}\n'
+        c_source_code = '#include <stdio.h>\n\nint main() {\n\tdo \t{\n\tprintf("Hello");\n\t}\n\twhile(1 == 2);\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         
@@ -557,7 +557,7 @@ class TestCompiler(unittest.TestCase):
         END_MAIN
         """
 
-        c_source_code = '#include <stdio.h>\n\nint main() {\n\tswitch(1) {\n\tcase 1:\n{\n\tprintf("Hello");\n\tbreak;\n\t}\n\tdefault:\n{\n\tprintf("World");\n\tbreak;\n\t}\n\t}\n\n\treturn 0;\n}\n'
+        c_source_code = '#include <stdio.h>\n\nint main() {\n\tswitch(1) \t{\n\tcase 1:\n\t{\n\tprintf("Hello");\n\tbreak;\n\t}\n\tdefault:\n\t{\n\tprintf("World");\n\tbreak;\n\t}\n\t}\n\n\treturn 0;\n}\n'
 
         c_compiled_code = self.__compile(source_code)
         

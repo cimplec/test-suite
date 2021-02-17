@@ -34,7 +34,7 @@ class TestArrayParser(unittest.TestCase):
                 table=table,
                 size_of_array=2,
                 msg="Test message",
-                func_ret_type={}
+                func_ret_type={},
             )
 
         self.__release_print()
@@ -135,7 +135,12 @@ class TestArrayParser(unittest.TestCase):
         table.entry("2", "int", "variable")
 
         op_value, op_type, i = array_initializer(
-            tokens=tokens_list, i=1, table=table, size_of_array=2, msg="Test message", func_ret_type={}
+            tokens=tokens_list,
+            i=1,
+            table=table,
+            size_of_array=2,
+            msg="Test message",
+            func_ret_type={},
         )
 
         self.assertEqual(op_value, "{1,2")

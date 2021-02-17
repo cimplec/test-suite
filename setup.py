@@ -37,7 +37,11 @@ setup(
     author_email="sdharchou@gmail.com",
     license="GNU General Public License v3",
     packages=find_packages(),
-    entry_points={"console_scripts": ["simc-test = simc_test.test_suite:run_tests",]},
+    entry_points={
+        "console_scripts": [
+            "simc-test = simc_test.test_suite:run_tests",
+        ]
+    },
     package_data={"simc": ["package-index"]},
     install_requires=["tqdm"],
     classifiers=[

@@ -173,7 +173,7 @@ class TestSimcParser(unittest.TestCase):
         self.__suppress_print()
 
         with self.assertRaises(SystemExit):
-            _ = print_statement(tokens=tokens_list, i=1, table=table, func_ret_type={})
+            _ = print_statement(tokens=tokens_list, i=1, table=table, func_ret_type={}, num_opcodes=-1)
 
         self.__release_print()
 
@@ -189,7 +189,7 @@ class TestSimcParser(unittest.TestCase):
         table.entry('"hello world"', "string", "constant")
 
         opcode, _, _ = print_statement(
-            tokens=tokens_list, i=1, table=table, func_ret_type={}
+            tokens=tokens_list, i=1, table=table, func_ret_type={}, num_opcodes=-1
         )
 
         self.assertEqual(opcode, OpCode("print", '"hello world"', None))

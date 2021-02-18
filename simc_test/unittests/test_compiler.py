@@ -218,7 +218,7 @@ class TestCompiler(unittest.TestCase):
         var a[2] = {1, 2}
         """
 
-        c_source_code = "#include <stdio.h>\n\tint a[2] = {1,2};\n"
+        c_source_code = '\n\tint a[2] = {1,2};\n'
 
         c_compiled_code = self.__compile(source_code)
 
